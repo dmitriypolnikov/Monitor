@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorGrey"
+        android:orientation="vertical"
+        tools:context=".Activities.MyProfile">
+
+        <include
+            android:id="@+id/include"
+            layout="@layout/custom_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10sp"
+                android:layout_marginRight="10sp"
+                android:background="@color/colorGrey"
+                android:orientation="vertical"
+                tools:context=".Activities.MyProfile">
+
+                <TextView
+                    android:id="@+id/txtMonitor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20sp"
+                    android:text="Creating HTTP monitor"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="20sp" />
+
+                <EditText
+                    android:layout_marginTop="30sp"
+                    android:id="@+id/edtFriendlyName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Enter Friendly name"
+                    android:textColorHint="@color/colorWhite"
+                    />
+
+                <EditText
+                    android:id="@+id/edtWebAddress"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="http://" />
+
+                <EditText
+
+                    android:id="@+id/edtMeta"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint=""
+                    android:visibility="gone" />
+
+                <EditText
+
+                    android:id="@+id/edtPort"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint=""
+                    android:visibility="gone" />
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10sp"
+
+                    android:layout_marginRight="10sp"
+                    android:layout_marginTop="10sp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Interval"
+                        android:textColor="@color/colorWhite" />
+
+                    <TextView
+                        android:id="@+id/txtVwInterval"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="2/100"
+                        android:textColor="@color/colorWhite" />
+
+                </LinearLayout>
+
+                <android.support.v7.widget.AppCompatSeekBar
+                    android:id="@+id/seekBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10sp" />
+
+                <EditText
+                    android:id="@+id/edTxtDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/ic_date_range_black_24dp"
+                    android:drawablePadding="5sp"
+                    android:drawableTint="@color/colorWhite"
+                    android:hint="Start Date"
+                    android:onClick="clickSave"
+                    android:textColor="@color/colorWhite"
+                    android:textColorHint="@color/colorWhite" />
+
+                <Button
+                    android:id="@+id/btnSaveMonitor"
+                    android:layout_width="match_parent"
+                    android:layout_height="40sp"
+                    android:layout_margin="20sp"
+                    android:background="@drawable/btn_round_border"
+                    android:onClick="clickSave"
+                    android:text="Save Monitor"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorWhite" />
+
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+</layout>
