@@ -33,14 +33,13 @@
                         android:id="@+id/ivMonitor"
                         android:layout_width="80sp"
                         android:layout_height="80sp"
-                        android:layout_margin="5sp"
-                        app:srcCompat="@drawable/svgic_monitor_btn_hover" />
+                        android:layout_margin="5sp" />
 
                     <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignRight="@+id/ivMonitor"
-                        app:srcCompat="@drawable/ic_down" />
+                        android:id="@+id/imgStatus"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_alignRight="@+id/ivMonitor" />
 
                     <TextView
                         android:id="@+id/tvMonitorName"
@@ -58,7 +57,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/tvMonitorName"
+                        android:layout_marginRight="10dp"
                         android:layout_marginTop="5sp"
+                        android:layout_toLeftOf="@+id/ivPaused"
                         android:layout_toRightOf="@id/ivMonitor"
                         android:orientation="horizontal">
 

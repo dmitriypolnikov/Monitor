@@ -9,6 +9,7 @@ import com.monitorfree.Activities.SaveMonitor;
 import com.monitorfree.Activities.SignUp;
 import com.monitorfree.Activities.Verification;
 import com.monitorfree.BackgroundService.BService;
+import com.monitorfree.BackgroundService.DemoService;
 import com.monitorfree.Fragment.AddMonitor;
 import com.monitorfree.Fragment.FAQs;
 import com.monitorfree.Fragment.Home;
@@ -27,6 +28,8 @@ import dagger.Component;
 @Component(modules = {DIModule.class})
 public interface DIComponants {
 
+
+    void inject(DemoService demoService);
 
     static final class Initializer {
         private Initializer() {

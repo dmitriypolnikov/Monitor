@@ -8,8 +8,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.monitorfree.R;
+import com.monitorfree.UserModel.AddMonitor;
+import com.monitorfree.UserModel.MonitorStatus;
 import com.monitorfree.databinding.CustomCheckpointsBinding;
 import com.monitorfree.databinding.CustomMonitorBinding;
+
+import java.util.List;
 
 /**
  * Created by jassi on 01-08-2016.
@@ -18,11 +22,11 @@ import com.monitorfree.databinding.CustomMonitorBinding;
 public class CustomAdapterCheckpoints extends RecyclerView.Adapter<CustomAdapterCheckpoints.Holder> {
 
     Context context;
+    List<MonitorStatus> monitorStatusList;
 
-    public CustomAdapterCheckpoints(Context context) {
+    public CustomAdapterCheckpoints(Context context, List<MonitorStatus> monitorStatusList) {
         this.context = context;
-
-
+        this.monitorStatusList = monitorStatusList;
     }
 
 
@@ -39,15 +43,23 @@ public class CustomAdapterCheckpoints extends RecyclerView.Adapter<CustomAdapter
     @Override
     public void onBindViewHolder(Holder holder, int position) {
 
-//        final ModelProfession user = modelProfessionArrayList.get(position);
-        // add these lines
+        MonitorStatus statusData = monitorStatusList.get(position);
 
+        String[] date = statusData.getMobileDateTime().split(" ");
+        String[] arrTime = date[1].split(":");
 
+        holder.binding.txtMonitorTime.setText(arrTime[0] + ":" + arrTime[1]);
+
+        if (statusData.getStatus().equals("1")) {
+            holder.binding.imgMonitorStatus.setBackgroundResource(R.drawable.ic_up_arrow);
+        } else {
+            holder.binding.imgMonitorStatus.setBackgroundResource(R.drawable.ic_down);
+        }
     }
 
     @Override
     public int getItemCount() {
-        return 10;
+        return this.monitorStatusList.size();
     }
 
 
@@ -60,7 +72,4 @@ public class CustomAdapterCheckpoints extends RecyclerView.Adapter<CustomAdapter
             binding = DataBindingUtil.bind(itemView);
         }
     }
-
-
-//
 }

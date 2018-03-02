@@ -5,14 +5,16 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
-    <!--<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />-->
+    <!--<uses-permission android:name="android.permission.WAKE_LOCK" />-->
     <!--<uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE" />-->
     <!--<uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />-->
     <!--<uses-permission android:name="android.permission.WRITE_SETTINGS" />-->
 
     <application
-        android:name=".MyApp"
+        android:name="com.monitorfree.MyApp"
         android:allowBackup="true"
         android:icon="@drawable/logo"
         android:label="@string/app_name"
@@ -64,7 +66,25 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden"></activity>
 
-        <service android:name=".BackgroundService.BService"/>
+        <!--<service android:name=".BackgroundService.BService"/>-->
+
+        <service
+            android:exported="false"
+            android:name=".BackgroundService.DemoService">
+            <intent-filter>
+                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE"/>
+            </intent-filter>
+        </service>
+
+        <!--<receiver-->
+            <!--android:name=".BackgroundService.SensorRestarterBroadcastReceiver"-->
+            <!--android:enabled="true"-->
+            <!--android:exported="true"-->
+            <!--android:label="RestartServiceWhenStopped">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="com.monitorfree.BackgroundService.RestartSensor"/>-->
+            <!--</intent-filter>-->
+        <!--</receiver>-->
 
     </application>
 

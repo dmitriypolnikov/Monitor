@@ -40,7 +40,7 @@ public interface iRepository {
     @POST("/monitor/add/")
     Call<RootRegister> addMonitor(@Field("startDate") String startDate, @Field("name") String name,
                                   @Field("address") String address, @Field("interval") String interval, @Field("type") String type, @Field("port") String port, @Field("keywords") String keywords,
-                                  @Field("sig") String sig, @Field("key") String key, @Field("hash") String hash);
+                                  @Field("mobileDateTime") String mobileDateTime, @Field("sig") String sig, @Field("key") String key, @Field("hash") String hash);
 
     @FormUrlEncoded
     @POST("/monitor/list/")
@@ -53,16 +53,24 @@ public interface iRepository {
 
     @FormUrlEncoded
     @POST("/status/add/")
-    Call<RootRegister> sendStatus(@Field("sig") String sig, @Field("key") String key, @Field("hash") String hash, @Field("monitorId") String monitorId, @Field("status") String status);
+    Call<RootRegister> sendStatus(@Field("sig") String sig, @Field("key") String key, @Field("hash") String hash, @Field("monitorId") String monitorId, @Field("status") String status, @Field("mobileDateTime") String mobileDateTime);
 
 
     @FormUrlEncoded
     @POST("/status/list/")
-    Call<RootMonitorList> getStatusList(@Field("sig") String sig, @Field("key") String key, @Field("hash") String hash, @Field("monitorId") String monitorId, @Field("timeframe") String timeframe);
+    Call<RootMonitorStatus> getStatusList(@Field("sig") String sig, @Field("key") String key, @Field("hash") String hash, @Field("monitorId") String monitorId, @Field("timeFrame") String timeFrame);
 
     @FormUrlEncoded
     @POST("/status/get/")
     Call<RootMonitorStatus> getMonitorStatus(@Field("sig") String sig, @Field("key") String key, @Field("hash") String hash, @Field("monitorId") String monitorId);
+
+    @FormUrlEncoded
+    @POST("/monitor/delete/")
+    Call<RootRegister> sendMonitorDelete(@Field("sig") String sig, @Field("key") String key, @Field("hash") String hash, @Field("monitorId") String monitorId);
+
+    @FormUrlEncoded
+    @POST("/monitor/pause/")
+    Call<RootRegister> sendMonitorPause(@Field("sig") String sig, @Field("key") String key, @Field("hash") String hash, @Field("monitorId") String monitorId);
 
 
     @GET("/")

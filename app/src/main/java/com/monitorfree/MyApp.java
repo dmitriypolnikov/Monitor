@@ -43,6 +43,7 @@ public class MyApp extends Application implements GlobalKeys{
     public static MyApp instance;
     public static int timerCount = 0;
     public static ArrayList<AddMonitor> globalMonitorList = new ArrayList<AddMonitor>();
+    public static ArrayList<AddMonitor> globalBGMonitorList = new ArrayList<AddMonitor>();
 
     public MyApp() {
         Log.d("constuctor called", "called con");
@@ -84,12 +85,8 @@ public class MyApp extends Application implements GlobalKeys{
 
 
     public void logOut() {
-//        String token = sharedPref.getSharedPref(fcmToken);
-//
-        //     LoginManager.getInstance().logOut();
         editor.clear();
         editor.commit();
-//        sharedPref.saveSharedPref(fcmToken, token);
     }
 
 

@@ -23,10 +23,8 @@ public class ForgotPassword extends AppCompatActivity {
     @Inject
     UserRequests userRequests;
 
-
     @Inject
     User user;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,9 +33,6 @@ public class ForgotPassword extends AppCompatActivity {
         MyApp.component().inject(this);
 
         binding.setUser(user);
-
-
-
     }
 
 
@@ -46,10 +41,11 @@ public class ForgotPassword extends AppCompatActivity {
         switch (view.getId()) {
 
             case R.id.btnSend:
-
-
                 userRequests.funForgotPass(myApp,user,binding,ForgotPassword.this);
+                break;
 
+            case R.id.txtSignup:
+                myApp.go(ForgotPassword.this, SignUp.class);
                 break;
         }
     }

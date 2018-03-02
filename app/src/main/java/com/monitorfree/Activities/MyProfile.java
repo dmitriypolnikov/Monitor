@@ -19,7 +19,6 @@ public class MyProfile extends AppCompatActivity implements GlobalKeys {
     @Inject
     MyApp myApp;
 
-
     ActivityMyProfileBinding binding;
 
     @Override
@@ -30,6 +29,9 @@ public class MyProfile extends AppCompatActivity implements GlobalKeys {
 
         binding.tvEmail.setText(myApp.getKey(USER_EMAIL));
         binding.tvName.setText(myApp.getKey(USER_NAME));
+
+        binding.include.ivDelete.setVisibility(View.GONE);
+        binding.include.ivPaused.setVisibility(View.GONE);
 
         binding.include.imgVw.setOnClickListener(new View.OnClickListener() {
             @Override

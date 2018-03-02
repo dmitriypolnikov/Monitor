@@ -3,15 +3,22 @@ package com.monitorfree.BackgroundService;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.tv.TvContract;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.IBinder;
+import android.os.StrictMode;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.monitorfree.Fragment.Home;
 import com.monitorfree.MyApp;
 import com.monitorfree.RequestModel.UserRequests;
 import com.monitorfree.UserModel.AddMonitor;
@@ -37,6 +44,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Executors;
@@ -65,6 +74,8 @@ public class BService extends Service {
     @Inject
     UserRequests userRequests;
 
+    ArrayList<AddMonitor> arrMonitor;
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -76,48 +87,95 @@ public class BService extends Service {
 
         MyApp.component().inject(this);
 
+//        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+//        StrictMode.setThreadPolicy(policy);
 
-        Toast.makeText(this, "start sticky", Toast.LENGTH_SHORT).show();
-        fun();
+        Gson gson = new Gson();
+
+        List<AddMonitor> callLog = new ArrayList<AddMonitor>();
+        SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        String getJson = mPrefs.getString("monitorList", "");
+        if (getJson.isEmpty()) {
+            arrMonitor = new ArrayList<AddMonitor>();
+        } else {
+            Type type = new TypeToken<List<AddMonitor>>() {
+            }.getType();
+            arrMonitor = gson.fromJson(getJson, type);
+        }
+
+//        arrMonitor = myApp.globalBGMonitorList;
+
+        initializeTimerTask();
 
         return START_STICKY;
     }
 
-    void fun() {
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.i("EXIT", "ondestroy!");
 
-        Timer t = new Timer();
-        TimerTask task = new TimerTask() {
+        Intent broadcastIntent = new Intent("com.monitorfree.BackgroundService.RestartSensor");
+        sendBroadcast(broadcastIntent);
+    }
 
-            @Override
-            public void run() {
+    private Timer timer;
+    private TimerTask timerTask;
+
+    public void startTimer() {
+        //set a new Timer
+        timer = new Timer();
+
+        //initialize the TimerTask's job
+        initializeTimerTask();
+
+        //schedule the timer, to wake up every 1 second
+        timer.scheduleAtFixedRate(timerTask, 1000, 60 * 1000);
+    }
+
+    /**
+     * it sets the timer to print the counter every x seconds
+     */
+    public void initializeTimerTask() {
+//        timerTask = new TimerTask() {
+//            public void run() {
 
                 myApp.timerCount++;
 
-                Log.d("countDB", "s " + myApp.globalMonitorList.size());
+                Log.d("countDB", "s " + arrMonitor.size());
 
-                ArrayList<AddMonitor> arrMonitor = myApp.globalMonitorList;
                 Calendar c = Calendar.getInstance();
 
+                SimpleDateFormat df1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                String mobileDateTime = df1.format(c.getTime());
+
                 SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-                String formattedDate = df.format(c.getTime());
 
                 for (int index = 0; index < arrMonitor.size(); index++) {
 
                     String monitorDate = arrMonitor.get(index).getStartDate().split(" ")[0];
+                    Date strDate = null;
+                    try {
+                        strDate = df.parse(monitorDate);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
                     int interval_time = Integer.valueOf(arrMonitor.get(index).getInterval());
 
                     if (arrMonitor.get(index).getType().equals("1")) {    //Http monitor
 
-                        if ((formattedDate.equals(monitorDate)) && (myApp.timerCount % interval_time == 0))
+                        if ((System.currentTimeMillis() > strDate.getTime()) && (myApp.timerCount % interval_time == 0) && (arrMonitor.get(index).getActive().equals("1")))
                         {
                             String strMonitor_id = String.valueOf(arrMonitor.get(index).getId());
                             boolean isGet = isHttpMonitor(arrMonitor.get(index).getAddress());
+
                             if (isGet) {
                                 Log.d("Http monitor", "true");
-                                userRequests.funSendStatus(strMonitor_id, myApp, "1");
+                                userRequests.funSendStatus(strMonitor_id, myApp, "1", mobileDateTime);
                             } else {
                                 Log.d("Http monitor", "false");
-                                userRequests.funSendStatus(strMonitor_id, myApp, "2");
+                                userRequests.funSendStatus(strMonitor_id, myApp, "2", mobileDateTime);
                             }
                         }
                         else {
@@ -126,17 +184,17 @@ public class BService extends Service {
 
                     } else if (arrMonitor.get(index).getType().equals("2")) {     //Ping monitor
 
-                        if ((formattedDate.equals(monitorDate)) && (myApp.timerCount % interval_time == 0)) {
+                        if ((System.currentTimeMillis() > strDate.getTime()) && (myApp.timerCount % interval_time == 0) && (arrMonitor.get(index).getActive().equals("1"))) {
 
                             String strMonitor_id = String.valueOf(arrMonitor.get(index).getId());
 
                             boolean isGet = isPingMonitor(arrMonitor.get(index).getAddress());
                             if (isGet) {
                                 Log.d("Ping monitor", "true");
-                                userRequests.funSendStatus(strMonitor_id, myApp, "1");
+                                userRequests.funSendStatus(strMonitor_id, myApp, "1", mobileDateTime);
                             } else {
                                 Log.d("Ping monitor", "false");
-                                userRequests.funSendStatus(strMonitor_id, myApp, "2");
+                                userRequests.funSendStatus(strMonitor_id, myApp, "2", mobileDateTime);
                             }
                         }
                         else {
@@ -145,44 +203,49 @@ public class BService extends Service {
 
                     } else if (arrMonitor.get(index).getType().equals("3")) {     //Keyword monitor
 
-                        if ((formattedDate.equals(monitorDate)) && (myApp.timerCount % interval_time == 0)) {
+                        if ((System.currentTimeMillis() > strDate.getTime()) && (myApp.timerCount % interval_time == 0) && (arrMonitor.get(index).getActive().equals("1"))) {
 
                             String search_keyword = arrMonitor.get(index).getKeywords();
                             String strMonitor_id = String.valueOf(arrMonitor.get(index).getId());
 
-                            Retrofit retrofit = new Retrofit.Builder()
-                                    .baseUrl(HttpUrl.parse(arrMonitor.get(index).getAddress()))
-                                    .addConverterFactory(PageAdapter.FACTORY)
-                                    .build();
+                            boolean isGet = isHttpMonitor(arrMonitor.get(index).getAddress());
+                            if (isGet) {
+                                Retrofit retrofit = new Retrofit.Builder()
+                                        .baseUrl(HttpUrl.parse(arrMonitor.get(index).getAddress()))
+                                        .addConverterFactory(PageAdapter.FACTORY)
+                                        .build();
 
-                            PageService requestAddress = retrofit.create(PageService.class);
-                            Call<Page> pageCall = requestAddress.get(HttpUrl.parse(arrMonitor.get(index).getAddress()));
-                            pageCall.enqueue(new Callback<Page>() {
-                                @Override
-                                public void onResponse(Call<Page> call, Response<Page> response) {
-                                    Log.i("ADASDASDASD", response.body().content);
 
-                                    boolean isGet = response.body().content.toLowerCase().contains(search_keyword.toLowerCase());
-                                    if (isGet) {
-                                        Log.d("Keyword monitor", "true");
-                                        userRequests.funSendStatus(strMonitor_id, myApp, "1");
-                                    } else {
-                                        Log.d("Keyword monitor", "false");
-                                        userRequests.funSendStatus(strMonitor_id, myApp, "2");
+                                PageService requestAddress = retrofit.create(PageService.class);
+                                Call<Page> pageCall = requestAddress.get(HttpUrl.parse(arrMonitor.get(index).getAddress()));
+                                pageCall.enqueue(new Callback<Page>() {
+                                    @Override
+                                    public void onResponse(Call<Page> call, Response<Page> response) {
+                                        Log.i("ADASDASDASD", response.body().content);
+
+                                        boolean isGet = response.body().content.toLowerCase().contains(search_keyword.toLowerCase());
+                                        if (isGet) {
+                                            Log.d("Keyword monitor", "true");
+                                            userRequests.funSendStatus(strMonitor_id, myApp, "1", mobileDateTime);
+                                        } else {
+                                            Log.d("Keyword monitor", "false");
+                                            userRequests.funSendStatus(strMonitor_id, myApp, "2", mobileDateTime);
+                                        }
                                     }
-                                }
-                                @Override
-                                public void onFailure(Call<Page> call, Throwable t) {
 
-                                }
-                            });
+                                    @Override
+                                    public void onFailure(Call<Page> call, Throwable t) {
+                                        Log.d("connection fail", "false");
+                                    }
+                                });
+                            }
                         }
                         else {
-                            Log.d("Ping monitor", "No still start");
+                            Log.d("Keyword monitor", "No still start");
                         }
 
                     } else if (arrMonitor.get(index).getType().equals("4")) {     //Port monitor
-                        if ((formattedDate.equals(monitorDate)) && (myApp.timerCount % interval_time == 0)) {
+                        if ((System.currentTimeMillis() > strDate.getTime()) && (myApp.timerCount % interval_time == 0) && (arrMonitor.get(index).getActive().equals("1"))) {
 
                             String port = String.valueOf(arrMonitor.get(index).getPort());
                             String strMonitor_id = String.valueOf(arrMonitor.get(index).getId());
@@ -190,19 +253,26 @@ public class BService extends Service {
                             boolean isGet = isPortMonitor(arrMonitor.get(index).getAddress(), port);
                             if (isGet) {
                                 Log.d("Port monitor", "true");
-                                userRequests.funSendStatus(strMonitor_id, myApp, "1");
+                                userRequests.funSendStatus(strMonitor_id, myApp, "1", mobileDateTime);
                             } else {
                                 Log.d("Port monitor", "false");
-                                userRequests.funSendStatus(strMonitor_id, myApp, "2");
+                                userRequests.funSendStatus(strMonitor_id, myApp, "2", mobileDateTime);
                             }
+                        }
+                        else {
+                            Log.d("Port monitor", "No still start");
                         }
                     }
                 }
-            }
-        };
+//            }
+//        };
+    }
 
-//        if (myApp.globalMonitorList.size() > 0) {
-            t.scheduleAtFixedRate(task, 0, 1000);
+    public void stoptimertask() {
+        //stop the timer, if it's not already null
+//        if (timer != null) {
+//            timer.cancel();
+//            timer = null;
 //        }
     }
 
@@ -253,20 +323,14 @@ public class BService extends Service {
 
     public boolean isPortMonitor(String monitorAddress, String port) {
 
-        String protocal = "", host = "";
-        if (monitorAddress.toLowerCase().contains("http")){
-            protocal = monitorAddress.substring(0, 4);
-            host = monitorAddress.replace("http://", "");
-        } else if ( monitorAddress.toLowerCase().contains("https")) {
-            protocal = monitorAddress.substring(0, 5);
-            host = monitorAddress.replace("https://", "");
-        }
+        String address = monitorAddress.substring(0, monitorAddress.length() - 1);
+        address = address + ":" + port + "/";
 
         ConnectivityManager connMan = (ConnectivityManager) myApp.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = connMan.getActiveNetworkInfo();
         if (netInfo != null && netInfo.isConnected()) {
             try {
-                URL urlServer = new URL(protocal, host, port);
+                URL urlServer = new URL(address);
                 HttpURLConnection urlConn = (HttpURLConnection) urlServer.openConnection();
                 urlConn.setConnectTimeout(3000); //<- 3Seconds Timeout
                 urlConn.connect();
@@ -284,16 +348,16 @@ public class BService extends Service {
         return false;
     }
 
-    static class Page {
-        String content;
+    public static class Page {
+        public String content;
 
         Page(String content) {
             this.content = content;
         }
     }
 
-    static final class PageAdapter implements Converter<ResponseBody, Page> {
-        static final Converter.Factory FACTORY = new Converter.Factory() {
+    public static final class PageAdapter implements Converter<ResponseBody, Page> {
+        public static final Converter.Factory FACTORY = new Converter.Factory() {
             @Override
             public Converter<ResponseBody, ?> responseBodyConverter(Type type, java.lang.annotation.Annotation[] annotations, Retrofit retrofit) {
                 if (type == BService.Page.class) return new BService.PageAdapter();
@@ -310,7 +374,7 @@ public class BService extends Service {
         }
     }
 
-    interface PageService {
+    public interface PageService {
         @GET
         Call<Page> get(@Url HttpUrl url);
     }

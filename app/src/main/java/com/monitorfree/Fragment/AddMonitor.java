@@ -5,6 +5,7 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +27,10 @@ public class AddMonitor extends Fragment implements View.OnClickListener {
 
     FragmentMonitorBinding binding;
 
+    Fragment fragment = null;
+    Class fragmentClass = null;
+    FragmentManager fm;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -37,6 +42,7 @@ public class AddMonitor extends Fragment implements View.OnClickListener {
         binding.linPing.setOnClickListener(this);
         binding.linPort.setOnClickListener(this);
         binding.linKeyword.setOnClickListener(this);
+        binding.txtFaq.setOnClickListener(this);
 
         return binding.getRoot();
     }
@@ -76,6 +82,25 @@ public class AddMonitor extends Fragment implements View.OnClickListener {
 
                 break;
 
+            case R.id.txtFaq:
+                fragmentClass = FAQs.class;
+                replaceFragment();
+                break;
+
+        }
+    }
+
+    public void replaceFragment() {
+        try {
+            fragment = (Fragment) fragmentClass.newInstance();
+            fm = getActivity().getSupportFragmentManager();
+            fm.beginTransaction()
+                    .replace(R.id.relFragment, fragment)
+                    .commit();
+        } catch (java.lang.InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
         }
     }
 }

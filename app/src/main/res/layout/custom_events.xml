@@ -20,8 +20,7 @@
                 android:id="@+id/ivMonitorStatus"
                 android:layout_width="30sp"
                 android:layout_height="30sp"
-                android:layout_marginLeft="10sp"
-                android:background="@color/colorText" />
+                android:layout_marginLeft="10sp" />
 
             <TextView
                 android:id="@+id/txtVwTime"
@@ -29,8 +28,10 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/ivMonitorStatus"
                 android:layout_marginLeft="10sp"
-                android:layout_marginTop="20sp"
-                android:text="09:00" />
+                android:layout_marginTop="10dp"
+                android:text="09:00"
+                android:textColor="@android:color/white"
+                android:textSize="17sp" />
 
             <View
                 android:id="@+id/ivSeprator"
@@ -43,11 +44,14 @@
                 android:background="#ccc" />
 
             <TextView
+                android:id="@+id/txtDateTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/ivSeprator"
+                android:layout_marginBottom="7dp"
                 android:layout_marginLeft="10sp"
-                android:text="09:00" />
+                android:text="09:00"
+                android:textColor="@android:color/darker_gray" />
 
         </RelativeLayout>
     </android.support.v7.widget.CardView>

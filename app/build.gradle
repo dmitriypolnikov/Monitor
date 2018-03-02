@@ -4,7 +4,7 @@ android {
     compileSdkVersion 26
     buildToolsVersion '26.0.3'
     defaultConfig {
-        applicationId "com.monitorfree"
+        applicationId 'com.monitorfree'
         minSdkVersion 15
         targetSdkVersion 26
         versionCode 1
@@ -16,11 +16,9 @@ android {
             enabled true
         }
     }
-
     dataBinding {
         enabled = true
     }
-
     buildTypes {
         release {
             minifyEnabled false
@@ -28,19 +26,20 @@ android {
         }
     }
     dexOptions {
-        incremental = true
+//        incremental = true
         preDexLibraries = false
         javaMaxHeapSize "4g"
     }
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    productFlavors {
+    }
 }
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-//    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    //    implementation fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:26.1.0'
     compile 'com.android.support:design:26.1.0'
     compile 'com.android.support:cardview-v7:26.1.0'
@@ -49,22 +48,22 @@ dependencies {
     compile 'com.squareup.retrofit2:converter-gson:2.3.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.android.support:support-vector-drawable:26.1.0'
-//    testCompile 'junit:junit:4.12'
-//    testCompile 'com.android.support.test:runner:1.0.1'
-//    testCompile 'com.android.support.test.espresso:espresso-core:3.0.1'
+    //    testCompile 'junit:junit:4.12'
+    //    testCompile 'com.android.support.test:runner:1.0.1'
+    //    testCompile 'com.android.support.test.espresso:espresso-core:3.0.1'
     //Dagger..
     compile 'com.google.dagger:dagger:2.9'
     annotationProcessor "com.google.dagger:dagger-compiler:2.9"
     provided 'javax.annotation:jsr250-api:1.0'
     compile 'de.hdodenhof:circleimageview:2.1.0'
     compile 'com.jakewharton.rxbinding:rxbinding:0.4.0'
-
     //    annotationProcessor 'android.arch.persistence.room:compiler:1.0.0-alpha9';
     //    compile 'android.arch.persistence.room:runtime:1.0.0-alpha9';
-
-    annotationProcessor 'android.arch.persistence.room:compiler:1.0.0-alpha9';
-    compile 'android.arch.persistence.room:runtime:1.0.0-alpha9';
-    compile 'com.github.PhilJay:MPAndroidChart:v2.2.4'
+    annotationProcessor 'android.arch.persistence.room:compiler:1.0.0-alpha9'
+    compile 'android.arch.persistence.room:runtime:1.0.0-alpha9'
     compile 'org.jsoup:jsoup:1.10.1'
-
+    compile project(':MPChartLib')
+    //    compile 'com.google.guava:guava:20.0.1'
+    compile 'com.google.guava:guava:24.0-android'
+    compile 'com.firebase:firebase-jobdispatcher:0.8.5'
 }

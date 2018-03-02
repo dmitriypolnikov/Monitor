@@ -10,6 +10,7 @@ public class MonitorStatus {
     String monitorId;
     String status;
     String addedDate;
+    String mobileDateTime;
 
     public String getId() {
         return id;
@@ -41,5 +42,13 @@ public class MonitorStatus {
 
     public void setAddedDate(String addedDate) {
         this.addedDate = addedDate;
+    }
+
+    public String getMobileDateTime() {
+        return mobileDateTime;
+    }
+
+    public void setMobileDateTime(String mobileDateTime) {
+        this.mobileDateTime = mobileDateTime;
     }
 }

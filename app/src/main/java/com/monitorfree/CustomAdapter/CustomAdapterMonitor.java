@@ -60,18 +60,27 @@ public class CustomAdapterMonitor extends RecyclerView.Adapter<CustomAdapterMoni
             intent.putExtra("name",addMonitorList.get(position).getName());
             intent.putExtra("id",addMonitorList.get(position).getId());
             intent.putExtra("startDate",addMonitorList.get(position).getStartDate());
+            intent.putExtra("status", addMonitorList.get(position).getStatus().get(0).getStatus());
+            intent.putExtra("active", addMonitorList.get(position).getActive());
+            intent.putExtra("position", position);
+            intent.putExtra("interval", addMonitorList.get(position).getInterval());
+
 
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
         });
 
-        if (addMonitorList.get(position).getStatus().get(0).getStatus().equals("1")) {
-            holder.binding.imgStatus.setBackgroundResource(R.drawable.ic_up_arrow);
+        if (addMonitorList.get(position).getActive().equals("1")) {
+            if (addMonitorList.get(position).getStatus().get(0).getStatus().equals("1")) {
+                holder.binding.imgStatus.setBackgroundResource(R.drawable.ic_up_arrow);
+            } else {
+                holder.binding.imgStatus.setBackgroundResource(R.drawable.ic_down);
+            }
         } else {
-            holder.binding.imgStatus.setBackgroundResource(R.drawable.ic_down);
+            holder.binding.imgStatus.setBackgroundResource(R.drawable.ic_pause1);
         }
 
-        holder.binding.tvLastDate.setText(addMonitorList.get(position).getStatus().get(0).getAddedDate());
+        holder.binding.tvLastDate.setText(addMonitorList.get(position).getStatus().get(0).getMobileDateTime());
         holder.binding.tvMonitorName.setText("" + addMonitorList.get(position).getName());
 
     }

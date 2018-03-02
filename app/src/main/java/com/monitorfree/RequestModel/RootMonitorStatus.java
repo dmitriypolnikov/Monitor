@@ -3,6 +3,7 @@ package com.monitorfree.RequestModel;
 import com.monitorfree.UserModel.AddMonitor;
 import com.monitorfree.UserModel.MonitorStatus;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,13 +22,13 @@ public class RootMonitorStatus {
 
     Status status;
 
-    public MonitorStatus getData() {
+    public ArrayList<MonitorStatus> getData() {
         return data;
     }
 
-    public void setData(MonitorStatus data) {
+    public void setData(ArrayList<MonitorStatus> data) {
         this.data = data;
     }
 
-    MonitorStatus data;
+    ArrayList<MonitorStatus> data;
 }

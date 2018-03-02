@@ -40,6 +40,8 @@ public class AddMonitor implements Serializable {
 
     ArrayList<MonitorStatus> status;
 
+    String mobileDateTime;
+
     public String getId() {
         return id;
     }
@@ -142,5 +144,13 @@ public class AddMonitor implements Serializable {
 
     public void setKeywords(String keywords) {
         this.keywords = keywords;
+    }
+
+    public String getMobileDateTime() {
+        return mobileDateTime;
+    }
+
+    public void setMobileDateTime(String mobileDateTime) {
+        this.mobileDateTime = mobileDateTime;
     }
 }

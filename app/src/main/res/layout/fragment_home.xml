@@ -51,7 +51,8 @@
                         android:layout_below="@+id/ivMonitor"
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="10sp"
-                        android:text="ALL" />
+                        android:text="ALL"
+                        android:textColor="#fff" />
                 </RelativeLayout>
 
 
@@ -211,7 +212,15 @@
                         android:textColor="#fff" />
                 </RelativeLayout>
 
-
+                <TextView
+                    android:id="@+id/txtVwPause"
+                    android:layout_width="20sp"
+                    android:layout_height="20sp"
+                    android:layout_alignParentRight="true"
+                    android:background="@drawable/round_shape"
+                    android:gravity="center"
+                    android:text="0"
+                    android:textSize="14sp" />
             </RelativeLayout>
 
         </LinearLayout>
