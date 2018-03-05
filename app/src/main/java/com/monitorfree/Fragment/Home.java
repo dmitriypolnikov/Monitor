@@ -21,10 +21,16 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.firebase.jobdispatcher.Constraint;
+import com.firebase.jobdispatcher.Job;
+import com.firebase.jobdispatcher.Lifetime;
+import com.firebase.jobdispatcher.Trigger;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.monitorfree.Activities.CallBackSuccess;
+import com.monitorfree.Activities.Main2Activity;
 import com.monitorfree.BackgroundService.BService;
+import com.monitorfree.BackgroundService.DemoService;
 import com.monitorfree.CustomAdapter.CustomAdapterMonitor;
 import com.monitorfree.MyApp;
 import com.monitorfree.R;
@@ -137,15 +143,6 @@ public class Home extends Fragment implements CallBackSuccess, View.OnClickListe
 
         myApp.globalBGMonitorList = rootMonitorList.getData();
 
-        SharedPreferences appSharedPrefs = PreferenceManager
-                .getDefaultSharedPreferences(getActivity());
-        SharedPreferences.Editor prefsEditor = appSharedPrefs.edit();
-
-        Gson gson = new Gson();
-        String json = gson.toJson(myApp.globalBGMonitorList);
-        prefsEditor.putString("monitorList", json);
-        prefsEditor.commit();
-
         monitorListSort(rootMonitorList.getData());
 
         for (int i = 0 ; i < myApp.globalMonitorList.size() ; i++) {
@@ -165,6 +162,41 @@ public class Home extends Fragment implements CallBackSuccess, View.OnClickListe
                 }
             } else if (myApp.globalMonitorList.get(i).getActive().equals("-1")){
                 pauseMonitorList.add(myApp.globalMonitorList.get(i));
+            }
+
+
+            //start for all monitors using Jobscheduler after login
+            if (Main2Activity.isFirstLogin) {
+
+                AddMonitor addMonitor = myApp.globalMonitorList.get(i);
+
+                Bundle myExtrasBundle = new Bundle();
+                myExtrasBundle.putString("monitorID", addMonitor.getId());
+                myExtrasBundle.putString("address", addMonitor.getAddress());
+                myExtrasBundle.putString("keywords", addMonitor.getKeywords());
+                myExtrasBundle.putString("port", addMonitor.getPort());
+                myExtrasBundle.putString("type", addMonitor.getType());
+                myExtrasBundle.putString("active", addMonitor.getActive());
+
+                final Job.Builder builder =
+                        Main2Activity.jobDispatcher
+                                .newJobBuilder()
+                                .setTag(addMonitor.getName().trim())
+                                .setLifetime(Lifetime.FOREVER)
+                                .setService(DemoService.class)
+                                .setTrigger(Trigger.executionWindow(60, 60 * 5))     //interval time 5 mins
+                                .setRecurring(true)
+//                                        .setReplaceCurrent(false)
+//                                        .setRetryStrategy(RetryStrategy.DEFAULT_EXPONENTIAL)
+                                .setConstraints(
+                                        // only run on an unmetered network
+                                        Constraint.ON_ANY_NETWORK
+                                );
+
+                builder.setExtras(myExtrasBundle);
+
+                Main2Activity.jobDispatcher.mustSchedule(builder.build());
+
             }
         }
 

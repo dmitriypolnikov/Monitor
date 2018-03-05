@@ -52,8 +52,7 @@ public class MonitorInfo extends AppCompatActivity implements CallBackSuccess {
     String[] timeMinuteSlot = {"60", "120", "360", "720", "1440"};
     String timeFrame = timeMinuteSlot[4];   //1 hour as default
 
-    String monitorId, monitorName, startDate, monitorStatus, monitorActive, interval;
-    int position;
+    String monitorId, monitorName, startDate, monitorStatus, monitorActive, interval, address, port, keywords, type;
 
     @Inject
     UserRequests userRequests;
@@ -79,8 +78,11 @@ public class MonitorInfo extends AppCompatActivity implements CallBackSuccess {
         startDate = getIntent().getStringExtra("startDate");
         monitorStatus = getIntent().getStringExtra("status");
         monitorActive = getIntent().getStringExtra("active");
-        position = getIntent().getIntExtra("position", -1);
         interval = getIntent().getStringExtra("interval");
+        address = getIntent().getStringExtra("address");
+        port = getIntent().getStringExtra("port");
+        keywords = getIntent().getStringExtra("keywords");
+        type = getIntent().getStringExtra("type");
 
         binding.include.txtVw.setText("Monitor Details");
         binding.include.ivDelete.setOnClickListener(new View.OnClickListener() {
@@ -97,7 +99,7 @@ public class MonitorInfo extends AppCompatActivity implements CallBackSuccess {
                     alertDialog("pause", "Pause ?", "Do you want to pause this monitor?", monitorId);
                 } else {
                     isDelete = true;
-                    userRequests.sendMonitorPause(myApp, monitorId, -1, position, MonitorInfo.this, callBackSuccess);
+                    userRequests.sendMonitorPause(myApp, monitorId, -1, monitorName, address, keywords, port, type, interval, MonitorInfo.this, callBackSuccess);
                 }
             }
         });
@@ -179,18 +181,14 @@ public class MonitorInfo extends AppCompatActivity implements CallBackSuccess {
                     isDelete = true;
                     userRequests.sendMonitorDelete(myApp, monitorId, MonitorInfo.this, callBackSuccess);
 
-                    //JobSchdeuler Delete
-                    String monitor_name = myApp.globalMonitorList.get(position).getName().trim();
-                    Main2Activity.jobDispatcher.cancel(monitor_name);
-
                 } else if (type.equals("pause")) {
                     isDelete = false;
-                    userRequests.sendMonitorPause(myApp, monitorId, 1, position, MonitorInfo.this, callBackSuccess);
-
-                    //JobSchdeuler Delete
-                    String monitor_name = myApp.globalMonitorList.get(position).getName().trim();
-                    Main2Activity.jobDispatcher.cancel(monitor_name);
+                    userRequests.sendMonitorPause(myApp, monitorId, 1, "", "", "", "", "", "", MonitorInfo.this, callBackSuccess);
                 }
+
+                //JobSchdeuler Cancel
+                Main2Activity.jobDispatcher.cancel(monitorName.trim());
+
             }
         });
         newDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -291,7 +289,16 @@ public class MonitorInfo extends AppCompatActivity implements CallBackSuccess {
                 Home.m_bPause = true;
             }
 
+            Main2Activity.isFirstLogin = false;
+
             onBackPressed();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        Main2Activity.isFirstLogin = false;
+
+        super.onBackPressed();
     }
 }

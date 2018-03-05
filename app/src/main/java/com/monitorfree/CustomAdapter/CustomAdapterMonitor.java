@@ -62,9 +62,11 @@ public class CustomAdapterMonitor extends RecyclerView.Adapter<CustomAdapterMoni
             intent.putExtra("startDate",addMonitorList.get(position).getStartDate());
             intent.putExtra("status", addMonitorList.get(position).getStatus().get(0).getStatus());
             intent.putExtra("active", addMonitorList.get(position).getActive());
-            intent.putExtra("position", position);
             intent.putExtra("interval", addMonitorList.get(position).getInterval());
-
+            intent.putExtra("address", addMonitorList.get(position).getAddress());
+            intent.putExtra("type", addMonitorList.get(position).getType());
+            intent.putExtra("keywords", addMonitorList.get(position).getKeywords());
+            intent.putExtra("port", addMonitorList.get(position).getPort());
 
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);

@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
@@ -160,16 +162,6 @@ public class MyApp extends Application implements GlobalKeys{
         return true;
     }
 
-//    public static DIComponants component() {
-//        return graph;
-//    }
-//
-
-//    public static void buildComponentGraph() {
-//        graph = DIComponants.Initializer.init(instance);
-//    }
-
-
     public void go(Context context, Class object) {
 
         Intent intent = new Intent(context, object);
@@ -177,6 +169,20 @@ public class MyApp extends Application implements GlobalKeys{
         intent = null;
     }
 
+    public boolean isConnectingToInternet() {
+        ConnectivityManager connectivity = (ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivity != null) {
+            NetworkInfo[] info = connectivity.getAllNetworkInfo();
+            if (info != null)
+                for (int i = 0; i < info.length; i++)
+                    if (info[i].getState() == NetworkInfo.State.CONNECTED) {
+                        return true;
+                    }
+
+        }
+        return false;
+    }
 }
 
 

@@ -52,9 +52,6 @@ public class SaveMonitor extends AppCompatActivity implements CallBackSuccess, V
         binding = DataBindingUtil.setContentView(this, R.layout.activity_save_monitor);
 //        MyApp.component().inject(this);
 
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
-
         callBackSuccess = this;
         type = getIntent().getStringExtra("type");
 
@@ -178,15 +175,6 @@ public class SaveMonitor extends AppCompatActivity implements CallBackSuccess, V
                 } else if (addMonitor.getStartDate() == null || addMonitor.getStartDate().equals("")) {
                     binding.edTxtDate.setError("Please Select Date");
                 } else {
-//                    if(type.equals("1") || type.equals("3") || type.equals("4")) {
-//
-//                        String address = addMonitor.getAddress();
-//                        String endStr = address.substring(address.length() - 1, address.length());
-//                        if (!endStr.equals("/")) {
-//                            String newAddress = address + "/";
-//                            addMonitor.setAddress(newAddress);
-//                        }
-//                    }
 
                     if (type.equals("3")) {
                         addMonitor.setKeywords(binding.edtMeta.getText().toString());
@@ -194,7 +182,11 @@ public class SaveMonitor extends AppCompatActivity implements CallBackSuccess, V
                         addMonitor.setPort(binding.edtPort.getText().toString());
                     }
 
-                    userRequests.funAddMonitor(MyApp.instance, addMonitor, binding, SaveMonitor.this, callBackSuccess);
+                    if (!myApp.isConnectingToInternet()) {
+                        Toast.makeText(this, "Network Connection Error!", Toast.LENGTH_SHORT).show();
+                    } else {
+                        userRequests.funAddMonitor(MyApp.instance, addMonitor, binding, SaveMonitor.this, callBackSuccess);
+                    }
 
                 }
                 break;
@@ -238,9 +230,8 @@ public class SaveMonitor extends AppCompatActivity implements CallBackSuccess, V
     @Override
     public void success(Object object) {
 
-      //  myApp.getDao(myApp.getContext()).insertChat(addMonitor);
-//        onBackPressed();
         Intent intent = new Intent(this, Main2Activity.class);
+        intent.putExtra("isFirstLogin", false);
         startActivity(intent);
     }
 

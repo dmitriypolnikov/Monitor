@@ -4,9 +4,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
@@ -32,39 +31,21 @@ import com.monitorfree.UserModel.AddMonitor;
 import com.monitorfree.UserModel.MonitorStatus;
 import com.monitorfree.UserModel.User;
 import com.monitorfree.Util.GlobalKeys;
+import com.monitorfree.Util.MonitorUtil;
 import com.monitorfree.databinding.ActivityForgotPasswordBinding;
 import com.monitorfree.databinding.ActivityLoginBinding;
 import com.monitorfree.databinding.ActivitySaveMonitorBinding;
 import com.monitorfree.databinding.ActivitySignUpBinding;
 import com.monitorfree.databinding.FragmentHomeBinding;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-
-import java.io.IOException;
-import java.lang.reflect.Type;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Random;
 
-import okhttp3.HttpUrl;
-import okhttp3.OkHttpClient;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
-import retrofit2.Converter;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.http.GET;
-import retrofit2.http.Url;
 
 /**
  * Created by jaspreet on 11/22/17.
@@ -157,13 +138,13 @@ public class UserRequests implements GlobalKeys {
                                         .setTag(addMonitor.getName().trim())
                                         .setLifetime(Lifetime.FOREVER)
                                         .setService(DemoService.class)
-                                        .setTrigger(Trigger.executionWindow(0, 60 * 5))
+                                        .setTrigger(Trigger.executionWindow(60, 60 * 5))
                                         .setRecurring(true)
 //                                        .setReplaceCurrent(false)
 //                                        .setRetryStrategy(RetryStrategy.DEFAULT_EXPONENTIAL)
                                         .setConstraints(
                                                 // only run on an unmetered network
-                                                Constraint.ON_UNMETERED_NETWORK
+                                                Constraint.ON_ANY_NETWORK
                                         );
 
                         builder.setExtras(myExtrasBundle);
@@ -411,7 +392,7 @@ public class UserRequests implements GlobalKeys {
 
     }
 
-    public void sendMonitorPause(MyApp boloTalk, String monitorId, int monitorStatus, int position, Context classContext, CallBackSuccess callBackSuccess) {
+    public void sendMonitorPause(MyApp boloTalk, String monitorId, int monitorStatus, String monitor_name, String address, String keywords, String port, String type, String invterval_time, Context classContext, CallBackSuccess callBackSuccess) {
 
         String key = "Uqj7RG6WqNfCqxvht8MhnkFSv";
         String sig = "f3bd2eda5604b98fdf287f55e789f7ec";
@@ -428,37 +409,31 @@ public class UserRequests implements GlobalKeys {
                 int errorType = userLogin2.getStatus().getError();
 
                 if (errorType == 0) {
-                    if (monitorStatus == 1) {
-                        boloTalk.globalMonitorList.get(position).setActive("-1");
-                    } else {
-                        boloTalk.globalMonitorList.get(position).setActive("1");
-
-                        AddMonitor addMonitor = boloTalk.globalMonitorList.get(position);
-                        String monitor_name = addMonitor.getName().trim();
+                    if (monitorStatus == -1) {
 
                         Bundle myExtrasBundle = new Bundle();
-                        myExtrasBundle.putString("monitorID", addMonitor.getId());
-                        myExtrasBundle.putString("address", addMonitor.getAddress());
-                        myExtrasBundle.putString("keywords", addMonitor.getKeywords());
-                        myExtrasBundle.putString("port", addMonitor.getPort());
-                        myExtrasBundle.putString("type", addMonitor.getType());
-                        myExtrasBundle.putString("active", addMonitor.getActive());
+                        myExtrasBundle.putString("monitorID", monitorId);
+                        myExtrasBundle.putString("address", address);
+                        myExtrasBundle.putString("keywords", keywords);
+                        myExtrasBundle.putString("port", port);
+                        myExtrasBundle.putString("type", type);
+                        myExtrasBundle.putString("active", "1");
 
-                        int intervalTime = Integer.valueOf(addMonitor.getInterval());
+                        int intervalTime = Integer.valueOf(invterval_time);
 
                         final Job.Builder builder =
                                 Main2Activity.jobDispatcher
                                         .newJobBuilder()
-                                        .setTag(monitor_name)
+                                        .setTag(monitor_name.trim())
                                         .setLifetime(Lifetime.FOREVER)
                                         .setService(DemoService.class)
-                                        .setTrigger(Trigger.executionWindow(0, 60 * intervalTime))
+                                        .setTrigger(Trigger.executionWindow(60, 60 * intervalTime))
                                         .setRecurring(true)
 //                                        .setReplaceCurrent(false)
 //                                        .setRetryStrategy(RetryStrategy.DEFAULT_EXPONENTIAL)
                                         .setConstraints(
                                                 // only run on an unmetered network
-                                                Constraint.ON_UNMETERED_NETWORK
+                                                Constraint.ON_ANY_NETWORK
                                         );
 
                         builder.setExtras(myExtrasBundle);
@@ -519,6 +494,10 @@ public class UserRequests implements GlobalKeys {
     }
 
     private void getMonitor(AddMonitor newMonitor) {
+
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
         Calendar c = Calendar.getInstance();
 
         SimpleDateFormat df1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -539,12 +518,7 @@ public class UserRequests implements GlobalKeys {
             if (System.currentTimeMillis() >= strDate.getTime())
             {
                 String strMonitor_id = String.valueOf(newMonitor.getId());
-                boolean isGet = isHttpMonitor(newMonitor.getAddress());
-
-//                Random rand = new Random();
-//                int randomNum = rand.nextInt(2) + 1;
-//
-//                funSendStatus(strMonitor_id, MyApp.instance, String.valueOf(randomNum), mobileDateTime);
+                boolean isGet = MonitorUtil.isHttpConnection(newMonitor.getAddress(), "1", "");
 
                 if (isGet) {
                     Log.d("Http monitor", "true");
@@ -564,7 +538,7 @@ public class UserRequests implements GlobalKeys {
 
                 String strMonitor_id = String.valueOf(newMonitor.getId());
 
-                boolean isGet = isPingMonitor(newMonitor.getAddress());
+                boolean isGet = MonitorUtil.isPingMonitor(newMonitor.getAddress());
                 if (isGet) {
                     Log.d("Ping monitor", "true");
                     funSendStatus(strMonitor_id, MyApp.instance, "1", mobileDateTime);
@@ -584,35 +558,13 @@ public class UserRequests implements GlobalKeys {
                 String search_keyword = newMonitor.getKeywords();
                 String strMonitor_id = String.valueOf(newMonitor.getId());
 
-                boolean isGet = isHttpMonitor(newMonitor.getAddress());
-                if (isGet) {
-                    Retrofit retrofit = new Retrofit.Builder()
-                            .baseUrl(HttpUrl.parse(newMonitor.getAddress()))
-                            .addConverterFactory(PageAdapter.FACTORY)
-                            .build();
-
-                    UserRequests.PageService requestAddress = retrofit.create(UserRequests.PageService.class);
-                    Call<UserRequests.Page> pageCall = requestAddress.get(HttpUrl.parse(newMonitor.getAddress()));
-                    pageCall.enqueue(new Callback<UserRequests.Page>() {
-                        @Override
-                        public void onResponse(Call<UserRequests.Page> call, Response<UserRequests.Page> response) {
-                            Log.i("ADASDASDASD", response.body().content);
-
-                            boolean isGet = response.body().content.toLowerCase().contains(search_keyword.toLowerCase());
-                            if (isGet) {
-                                Log.d("Keyword monitor", "true");
-                                funSendStatus(strMonitor_id, MyApp.instance, "1", mobileDateTime);
-                            } else {
-                                Log.d("Keyword monitor", "false");
-                                funSendStatus(strMonitor_id, MyApp.instance, "2", mobileDateTime);
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<UserRequests.Page> call, Throwable t) {
-
-                        }
-                    });
+                boolean isGetKeyword = MonitorUtil.isHttpConnection(newMonitor.getAddress(), "3", search_keyword);
+                if (isGetKeyword) {
+                    Log.d("Keyword monitor", "true");
+                    funSendStatus(strMonitor_id, MyApp.instance, "1", mobileDateTime);
+                } else {
+                    Log.d("Keyword monitor", "false");
+                    funSendStatus(strMonitor_id, MyApp.instance, "2", mobileDateTime);
                 }
             }
             else {
@@ -625,7 +577,7 @@ public class UserRequests implements GlobalKeys {
                 String port = String.valueOf(newMonitor.getPort());
                 String strMonitor_id = String.valueOf(newMonitor.getId());
 
-                boolean isGet = isPortMonitor(newMonitor.getAddress(), port);
+                boolean isGet = MonitorUtil.isPortMonitor(newMonitor.getAddress(), port);
                 if (isGet) {
                     Log.d("Port monitor", "true");
                     funSendStatus(strMonitor_id, MyApp.instance, "1", mobileDateTime);
@@ -640,108 +592,6 @@ public class UserRequests implements GlobalKeys {
         }
     }
 
-    public boolean isPingMonitor(String ping) {
-
-        if (ping.toLowerCase().contains("http")){
-            ping = ping.replace("http://", "");
-        } else if ( ping.toLowerCase().contains("https")) {
-            ping = ping.replace("https://", "");
-        }
-
-        Runtime runtime = Runtime.getRuntime();
-        try {
-            Process ipProcess = runtime.exec("/system/bin/ping -c 1 " + ping);
-            int exitValue = ipProcess.waitFor();
-            return (exitValue == 0);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    public boolean isHttpMonitor(String monitorAddress) {
-
-        ConnectivityManager connMan = (ConnectivityManager) MyApp.instance.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = connMan.getActiveNetworkInfo();
-        if (netInfo != null && netInfo.isConnected()) {
-            try {
-                URL urlServer = new URL(monitorAddress);
-                HttpURLConnection urlConn = (HttpURLConnection) urlServer.openConnection();
-                urlConn.setConnectTimeout(3000); //<- 3Seconds Timeout
-                urlConn.connect();
-                if (urlConn.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                    return true;
-                } else {
-                    return false;
-                }
-            } catch (MalformedURLException e1) {
-                return false;
-            } catch (IOException e) {
-                return false;
-            }
-        }
-        return false;
-    }
-
-    public boolean isPortMonitor(String monitorAddress, String port) {
-
-        String address = monitorAddress.substring(0, monitorAddress.length() - 1);
-        address = address + ":" + port + "/";
-
-        ConnectivityManager connMan = (ConnectivityManager) MyApp.instance.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = connMan.getActiveNetworkInfo();
-        if (netInfo != null && netInfo.isConnected()) {
-            try {
-                URL urlServer = new URL(address);
-                HttpURLConnection urlConn = (HttpURLConnection) urlServer.openConnection();
-                urlConn.setConnectTimeout(3000); //<- 3Seconds Timeout
-                urlConn.connect();
-                if (urlConn.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                    return true;
-                } else {
-                    return false;
-                }
-            } catch (MalformedURLException e1) {
-                return false;
-            } catch (IOException e) {
-                return false;
-            }
-        }
-        return false;
-    }
-
-    static class Page {
-        String content;
-
-        Page(String content) {
-            this.content = content;
-        }
-    }
-
-    static final class PageAdapter implements Converter<ResponseBody, UserRequests.Page> {
-        static final Converter.Factory FACTORY = new Converter.Factory() {
-            @Override
-            public Converter<ResponseBody, ?> responseBodyConverter(Type type, java.lang.annotation.Annotation[] annotations, Retrofit retrofit) {
-                if (type == UserRequests.Page.class) return new UserRequests.PageAdapter();
-                return null;
-            }
-        };
-
-        @Override
-        public UserRequests.Page convert(ResponseBody responseBody) throws IOException {
-            Document document = Jsoup.parse(responseBody.string());
-            Element value = document.body();
-            String content = value.html();
-            return new UserRequests.Page(content);
-        }
-    }
-
-    interface PageService {
-        @GET
-        Call<UserRequests.Page> get(@Url HttpUrl url);
-    }
 }
 
 

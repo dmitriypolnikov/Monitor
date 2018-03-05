@@ -48,23 +48,9 @@ import com.monitorfree.UserModel.*;
 import com.monitorfree.Util.GlobalKeys;
 import com.monitorfree.databinding.ActivityMain2Binding;
 
-import org.jsoup.Connection.Response;
-import org.jsoup.Jsoup;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.Serializable;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
-import java.io.IOException;
-import java.util.Calendar;
-
 import javax.inject.Inject;
 
 public class Main2Activity extends AppCompatActivity {
-
-    private TextView mTextMessage;
 
     static Fragment fragment = null;
     static Class fragmentClass = null;
@@ -80,8 +66,7 @@ public class Main2Activity extends AppCompatActivity {
     ActivityMain2Binding binding;
     public static FirebaseJobDispatcher jobDispatcher;
 
-    Intent mServiceIntent;
-    private BService mSensorService;
+    public static boolean isFirstLogin = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,8 +74,8 @@ public class Main2Activity extends AppCompatActivity {
         setContentView(R.layout.activity_main2);
         MyApp.component().inject(this);
 
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
+        Intent intent = getIntent();
+        isFirstLogin = intent.getBooleanExtra("isFirstLogin", true);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolBar);
         setSupportActionBar(toolbar);
@@ -113,122 +98,9 @@ public class Main2Activity extends AppCompatActivity {
         tvName.setText(myApp.getKey(GlobalKeys.USER_NAME));
         tvEmail.setText(myApp.getKey(GlobalKeys.USER_EMAIL));
 
-//        mSensorService = new BService();
-//        mServiceIntent = new Intent(this, mSensorService.getClass());
-//        if (!isMyServiceRunning(mSensorService.getClass())) {
-//            startService(mServiceIntent);
-//        }
-
         jobDispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(this));
 
-//        Calendar cal = Calendar.getInstance();
-//        Log.d("time", String.valueOf(cal.getTimeInMillis()));
-//        AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-//        long interval = 1000 * 60; // 5 minutes in milliseconds
-//
-//        Intent serviceIntent = new Intent(this, BService.class);
-//        // make sure you **don't** use *PendingIntent.getBroadcast*, it wouldn't work
-//        PendingIntent servicePendingIntent =
-//                PendingIntent.getService(this,
-//                        0, // integer constant used to identify the service
-//                        serviceIntent,
-//                        PendingIntent.FLAG_CANCEL_CURRENT);  // FLAG to avoid creating a second service if there's already one running
-//        // there are other options like setInexactRepeating, check the docs
-//
-//        am.setInexactRepeating(
-//                AlarmManager.RTC_WAKEUP,//type of alarm. This one will wake up the device when it goes off, but there are others, check the docs
-//                0,
-//                interval,
-//                servicePendingIntent
-//        );
-
-
-
-        try {
-
-            String url = "https://h.localtells.com";
-
-            URL obj = new URL(url);
-            HttpURLConnection conn = (HttpURLConnection) obj.openConnection();
-            conn.setReadTimeout(5000);
-            conn.addRequestProperty("Accept-Language", "en-US,en;q=0.8");
-            conn.addRequestProperty("User-Agent", "Mozilla");
-            conn.addRequestProperty("Referer", "google.com");
-
-            System.out.println("Request URL ... " + url);
-
-            boolean redirect = false;
-
-            // normally, 3xx is redirect
-            int status = conn.getResponseCode();
-            if (status != HttpURLConnection.HTTP_OK) {
-                if (status == HttpURLConnection.HTTP_MOVED_TEMP
-                        || status == HttpURLConnection.HTTP_MOVED_PERM
-                        || status == HttpURLConnection.HTTP_SEE_OTHER)
-                    redirect = true;
-            }
-
-            System.out.println("Response Code ... " + status);
-
-            if (redirect) {
-
-                // get redirect url from "location" header field
-                String newUrl = conn.getHeaderField("Location");
-
-                // get the cookie if need, for login
-                String cookies = conn.getHeaderField("Set-Cookie");
-
-                // open the new connnection again
-                conn = (HttpURLConnection) new URL(newUrl).openConnection();
-                conn.setRequestProperty("Cookie", cookies);
-                conn.addRequestProperty("Accept-Language", "en-US,en;q=0.8");
-                conn.addRequestProperty("User-Agent", "Mozilla");
-                conn.addRequestProperty("Referer", "google.com");
-
-                System.out.println("Redirect to URL : " + newUrl);
-
-            }
-
-            BufferedReader in = new BufferedReader(
-                    new InputStreamReader(conn.getInputStream()));
-            String inputLine;
-            StringBuffer html = new StringBuffer();
-
-            while ((inputLine = in.readLine()) != null) {
-                html.append(inputLine);
-            }
-            in.close();
-
-            System.out.println("URL Content... \n" + html.toString());
-            System.out.println("Done");
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-//        String url = "https://h.localtells.com";
-//
-//        Response response = null;
-//        try {
-//            response = Jsoup.connect(url).execute();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        System.out.println(response.statusCode() + " : " + response.url());
-
     }
-
-//    private boolean isMyServiceRunning(Class<?> serviceClass) {
-//        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-//        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-//            if (serviceClass.getName().equals(service.service.getClassName())) {
-//                Log.i ("isMyServiceRunning?", true+"");
-//                return true;
-//            }
-//        }
-//        Log.i ("isMyServiceRunning?", false+"");
-//        return false;
-//    }
 
     public void replaceFragment() {
         try {
@@ -276,6 +148,8 @@ public class Main2Activity extends AppCompatActivity {
                 break;
 
             case R.id.tabHome:
+                isFirstLogin = false;
+
                 setTitle("Dashboard");
                 fragmentClass = Home.class;
                 replaceFragment();
@@ -303,6 +177,10 @@ public class Main2Activity extends AppCompatActivity {
         newDialog.setMessage("Logout (you will lose the current session)?");
         newDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
+
+                //Cancel all jobschedule monitor
+                jobDispatcher.cancelAll();
+
                 myApp.logOut();
 
                 Intent intent = new Intent(myApp.getContext(), Login.class);
@@ -378,8 +256,5 @@ public class Main2Activity extends AppCompatActivity {
         super.onDestroy();
 
         Log.i("MAINACT", "onDestroy!");
-
-//        Intent broadcastIntent = new Intent("com.monitorfree.BackgroundService.RestartSensor");
-//        sendBroadcast(broadcastIntent);
     }
 }
