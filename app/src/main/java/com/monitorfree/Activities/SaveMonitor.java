@@ -112,17 +112,17 @@ public class SaveMonitor extends AppCompatActivity implements CallBackSuccess, V
         binding.include.txtVw.setText("Add Monitor");
         binding.edTxtDate.setOnFocusChangeListener(this);
 
-        addMonitor.setInterval(String.valueOf(5));
-//        addMonitor.setInterval(String.valueOf(30));
+//        addMonitor.setInterval(String.valueOf(5));
+        addMonitor.setInterval(String.valueOf(30));
         binding.seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 
                 int value = progress + 30;
                 binding.txtVwInterval.setText("" + value + "/150");
-//                addMonitor.setInterval(String.valueOf(progress + 30));
+                addMonitor.setInterval(String.valueOf(value));
 
-                addMonitor.setInterval(String.valueOf(5));
+//                addMonitor.setInterval(String.valueOf(5));
             }
 
             @Override
@@ -182,7 +182,7 @@ public class SaveMonitor extends AppCompatActivity implements CallBackSuccess, V
                         addMonitor.setPort(binding.edtPort.getText().toString());
                     }
 
-                    if (!myApp.isConnectingToInternet()) {
+                    if (!MyApp.instance.isConnectingToInternet()) {
                         Toast.makeText(this, "Network Connection Error!", Toast.LENGTH_SHORT).show();
                     } else {
                         userRequests.funAddMonitor(MyApp.instance, addMonitor, binding, SaveMonitor.this, callBackSuccess);

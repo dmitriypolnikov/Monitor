@@ -132,13 +132,15 @@ public class UserRequests implements GlobalKeys {
                         myExtrasBundle.putString("type", addMonitor.getType());
                         myExtrasBundle.putString("active", addMonitor.getActive());
 
+                        int interval_time = Integer.valueOf(addMonitor.getInterval());
+
                         final Job.Builder builder =
                                 Main2Activity.jobDispatcher
                                         .newJobBuilder()
                                         .setTag(addMonitor.getName().trim())
                                         .setLifetime(Lifetime.FOREVER)
                                         .setService(DemoService.class)
-                                        .setTrigger(Trigger.executionWindow(60, 60 * 5))
+                                        .setTrigger(Trigger.executionWindow(60, 60 * interval_time))
                                         .setRecurring(true)
 //                                        .setReplaceCurrent(false)
 //                                        .setRetryStrategy(RetryStrategy.DEFAULT_EXPONENTIAL)

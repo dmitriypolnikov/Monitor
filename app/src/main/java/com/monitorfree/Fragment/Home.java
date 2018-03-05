@@ -178,13 +178,15 @@ public class Home extends Fragment implements CallBackSuccess, View.OnClickListe
                 myExtrasBundle.putString("type", addMonitor.getType());
                 myExtrasBundle.putString("active", addMonitor.getActive());
 
+                int interval_time = Integer.valueOf(addMonitor.getInterval());
+
                 final Job.Builder builder =
                         Main2Activity.jobDispatcher
                                 .newJobBuilder()
                                 .setTag(addMonitor.getName().trim())
                                 .setLifetime(Lifetime.FOREVER)
                                 .setService(DemoService.class)
-                                .setTrigger(Trigger.executionWindow(60, 60 * 5))     //interval time 5 mins
+                                .setTrigger(Trigger.executionWindow(60, 60 * interval_time))     //interval time 5 mins
                                 .setRecurring(true)
 //                                        .setReplaceCurrent(false)
 //                                        .setRetryStrategy(RetryStrategy.DEFAULT_EXPONENTIAL)
