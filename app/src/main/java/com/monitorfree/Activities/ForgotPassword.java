@@ -4,12 +4,15 @@ import android.databinding.DataBindingUtil;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 
 import com.monitorfree.MyApp;
 import com.monitorfree.R;
 import com.monitorfree.RequestModel.UserRequests;
 import com.monitorfree.UserModel.User;
 import com.monitorfree.databinding.ActivityForgotPasswordBinding;
+
+import java.lang.reflect.Field;
 
 import javax.inject.Inject;
 
@@ -33,6 +36,18 @@ public class ForgotPassword extends AppCompatActivity {
         MyApp.component().inject(this);
 
         binding.setUser(user);
+
+        Field f = null;
+        try {
+            f =TextView.class.getDeclaredField("mCursorDrawableRes");
+            f.setAccessible(true);
+            f.set(binding.etEmail, R.drawable.cursor);
+
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 
 

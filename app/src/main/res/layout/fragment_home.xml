@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#454c50"
@@ -11,6 +11,7 @@
 
 
         <LinearLayout
+            android:id="@+id/topLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="7dp"
@@ -64,7 +65,8 @@
                     android:background="@drawable/round_shape"
                     android:gravity="center"
                     android:text="0"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    android:visibility="gone" />
 
 
             </RelativeLayout>
@@ -116,7 +118,8 @@
                     android:background="@drawable/round_shape"
                     android:gravity="center"
                     android:text="0"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    android:visibility="gone" />
 
 
             </RelativeLayout>
@@ -168,7 +171,8 @@
                     android:background="@drawable/round_shape"
                     android:gravity="center"
                     android:text="0"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    android:visibility="gone" />
 
 
             </RelativeLayout>
@@ -220,7 +224,8 @@
                     android:background="@drawable/round_shape"
                     android:gravity="center"
                     android:text="0"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    android:visibility="gone" />
             </RelativeLayout>
 
         </LinearLayout>
@@ -229,11 +234,25 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyVwMonitor"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent"
+            android:layout_below="@+id/topLayout">
 
 
         </android.support.v7.widget.RecyclerView>
 
+        <TextView
+            android:id="@+id/txtNoMonitor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="false"
+            android:layout_centerInParent="true"
+            android:text="No Monitors to show"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
 
-    </LinearLayout>
+    </RelativeLayout>
+
+
 </layout>

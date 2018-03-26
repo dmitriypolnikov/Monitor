@@ -3,6 +3,8 @@ package com.monitorfree.Util;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.StrictMode;
 
 import com.monitorfree.MyApp;
@@ -29,7 +31,7 @@ public class MonitorUtil {
 
             URL obj = new URL(address);
             HttpURLConnection conn = (HttpURLConnection) obj.openConnection();
-            conn.setReadTimeout(5000);
+            conn.setReadTimeout(30000);
             conn.addRequestProperty("Accept-Language", "en-US,en;q=0.8");
             conn.addRequestProperty("User-Agent", "Mozilla");
             conn.addRequestProperty("Referer", "google.com");
@@ -211,5 +213,15 @@ public class MonitorUtil {
             }
         }
         return false;
+    }
+
+    public static String getIPAddress() {
+
+        WifiManager wifiMan = (WifiManager) MyApp.instance.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        WifiInfo wifiInf = wifiMan.getConnectionInfo();
+        int ipAddress = wifiInf.getIpAddress();
+        String ip = String.format("%d.%d.%d.%d", (ipAddress & 0xff),(ipAddress >> 8 & 0xff),(ipAddress >> 16 & 0xff),(ipAddress >> 24 & 0xff));
+
+        return ip;
     }
 }

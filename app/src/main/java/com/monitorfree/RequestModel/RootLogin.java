@@ -27,5 +27,4 @@ public class RootLogin {
     Status status;
     Data data;
 
-
 }

@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -28,6 +29,7 @@ import com.monitorfree.RequestModel.UserRequests;
 import com.monitorfree.UserModel.AddMonitor;
 import com.monitorfree.UserModel.ChartModel;
 import com.monitorfree.UserModel.MonitorStatus;
+import com.monitorfree.Util.FontManager;
 import com.monitorfree.databinding.ActivityMonitorInfoBinding;
 
 import java.util.ArrayList;
@@ -46,13 +48,13 @@ public class MonitorInfo extends AppCompatActivity implements CallBackSuccess {
 
     ArrayList<String> labels = new ArrayList<String>();
 
-    ArrayList<MonitorStatus> allStatusList = new ArrayList<MonitorStatus>();
-
     String[] timeHourSlot = {"1", "2", "6", "12", "24"};
     String[] timeMinuteSlot = {"60", "120", "360", "720", "1440"};
     String timeFrame = timeMinuteSlot[4];   //1 hour as default
 
     String monitorId, monitorName, startDate, monitorStatus, monitorActive, interval, address, port, keywords, type;
+    int position;
+    boolean isNotification = false;
 
     @Inject
     UserRequests userRequests;
@@ -71,20 +73,79 @@ public class MonitorInfo extends AppCompatActivity implements CallBackSuccess {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_monitor_info);
         MyApp.component().inject(this);
 
+        if (!myApp.isConnectingToInternet()) {
+            return;
+        }
+
         callBackSuccess = this;
 
-        monitorId = getIntent().getStringExtra("id");
-        monitorName = getIntent().getStringExtra("name");
-        startDate = getIntent().getStringExtra("startDate");
-        monitorStatus = getIntent().getStringExtra("status");
-        monitorActive = getIntent().getStringExtra("active");
-        interval = getIntent().getStringExtra("interval");
-        address = getIntent().getStringExtra("address");
-        port = getIntent().getStringExtra("port");
-        keywords = getIntent().getStringExtra("keywords");
-        type = getIntent().getStringExtra("type");
+        Intent intent = getIntent();
+        boolean isMonitorDetails = intent.getBooleanExtra("monitor_details", false);
+        if (isMonitorDetails) {
+            monitorId = intent.getStringExtra("id");
+            monitorName = intent.getStringExtra("name");
+            startDate = intent.getStringExtra("startDate");
+            monitorStatus = intent.getStringExtra("status");
+            monitorActive = intent.getStringExtra("active");
+            position = intent.getIntExtra("position", -1);
+            interval = intent.getStringExtra("interval");
+            address = intent.getStringExtra("address");
+            port = intent.getStringExtra("port");
+            keywords = intent.getStringExtra("keywords");
+            type = intent.getStringExtra("type");
+        } else {
+            Bundle bundle = intent.getExtras();
+
+            isNotification = bundle.getBoolean("notification", false);
+            monitorId = bundle.getString("noti_id");
+            monitorName = bundle.getString("noti_name");
+            startDate = bundle.getString("noti_startDate");
+            monitorStatus = bundle.getString("noti_status");
+            monitorActive = bundle.getString("noti_active");
+            interval = bundle.getString("noti_interval");
+            address = bundle.getString("noti_address");
+            port = bundle.getString("noti_port");
+            keywords = bundle.getString("noti_keywords");
+            type = bundle.getString("noti_type");
+        }
+
+        String monitorType = "";
+        if (type.equals("1")) {
+            monitorType = "http";
+
+            binding.imgTypeIcon.setBackgroundResource(R.drawable.http);
+        } else if (type.equals("2")) {
+            monitorType = "ping";
+            binding.imgTypeIcon.setBackgroundResource(R.drawable.ping);
+        } else if (type.equals("3")) {
+            monitorType = "keyword";
+            binding.temp.setVisibility(View.VISIBLE);
+
+            binding.imgTypeIcon.setBackgroundResource(R.drawable.keyword);
+            binding.tempLabel.setText("Keywords");
+            binding.txtKeywordsPort.setText(keywords);
+        } else if (type.equals("4")) {
+            monitorType = "port";
+            binding.temp.setVisibility(View.VISIBLE);
+
+            binding.imgTypeIcon.setBackgroundResource(R.drawable.port);
+            binding.tempLabel.setText("Port");
+            binding.txtKeywordsPort.setText(port);
+        }
 
         binding.include.txtVw.setText("Monitor Details");
+
+//        Typeface iconFont = FontManager.getTypeface(getApplicationContext(), FontManager.FONTAWESOME);
+//        binding.include.ivDelete.setTypeface(iconFont);
+//        binding.include.ivPaused.setTypeface(iconFont);
+
+        binding.txtCheckType.setText(monitorType);
+        binding.txtUrl.setText(address);
+
+        if (interval.equals("5")) binding.txtCheckEvery.setText("288 times a day (approx. every 5 minutes)");
+        else if (interval.equals("30")) binding.txtCheckEvery.setText("48 times a day (approx. every 30 minutes)");
+        else if (interval.equals("60")) binding.txtCheckEvery.setText("24 times a day (approx. once every hour)");
+
         binding.include.ivDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -99,13 +160,15 @@ public class MonitorInfo extends AppCompatActivity implements CallBackSuccess {
                     alertDialog("pause", "Pause ?", "Do you want to pause this monitor?", monitorId);
                 } else {
                     isDelete = true;
-                    userRequests.sendMonitorPause(myApp, monitorId, -1, monitorName, address, keywords, port, type, interval, MonitorInfo.this, callBackSuccess);
+                    userRequests.sendMonitorPause(myApp, monitorId, -1, monitorName, address, keywords, port, type, interval, startDate, MonitorInfo.this, callBackSuccess);
                 }
             }
         });
 
         binding.tvMonitorName.setText(monitorName);
-        binding.txtVwStartDate.setText(startDate);
+
+        String strDate = startDate.split(" ")[0];
+        binding.txtVwStartDate.setText(strDate);
 
         if (monitorActive.equals("1")) {        //active
             if (monitorStatus.equals("1")) {    //up
@@ -183,12 +246,11 @@ public class MonitorInfo extends AppCompatActivity implements CallBackSuccess {
 
                 } else if (type.equals("pause")) {
                     isDelete = false;
-                    userRequests.sendMonitorPause(myApp, monitorId, 1, "", "", "", "", "", "", MonitorInfo.this, callBackSuccess);
+                    userRequests.sendMonitorPause(myApp, monitorId, 1, "", "", "", "", "", "", "", MonitorInfo.this, callBackSuccess);
                 }
 
                 //JobSchdeuler Cancel
-                Main2Activity.jobDispatcher.cancel(monitorName.trim());
-
+                myApp.jobDispatcher.cancel(monitorId);
             }
         });
         newDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -200,8 +262,6 @@ public class MonitorInfo extends AppCompatActivity implements CallBackSuccess {
     }
 
     private void getStatusList(String timeFrame) {
-        allStatusList.clear();
-
         userRequests.getStatusList(myApp, monitorId, timeFrame, this, callBackSuccess);
     }
 
@@ -211,22 +271,49 @@ public class MonitorInfo extends AppCompatActivity implements CallBackSuccess {
         if (object != null) {
             RootMonitorStatus rootStatusList = (RootMonitorStatus) object;
 
+            ArrayList<MonitorStatus> allStatusList = new ArrayList<MonitorStatus>();
             allStatusList = rootStatusList.getData();
 
-            binding.recyVwCheckPoint.setAdapter(new CustomAdapterCheckpoints(myApp.getContext(), allStatusList));
+            ArrayList<MonitorStatus> sameStatusRemoveList = new ArrayList<MonitorStatus>();
+            for (int i = 0 ; i < allStatusList.size() ; i++) {
+
+                if (i == allStatusList.size() - 1) {
+                    sameStatusRemoveList.add(allStatusList.get(i));
+                    break;
+                }
+
+                String[] prevDate = allStatusList.get(i).getMobileDateTime().split(" ");
+                String[] prevtime = prevDate[1].split(":");
+                String prevStr = prevtime[0] + ":" + prevtime[1];
+
+                String[] nextDate = allStatusList.get(i + 1).getMobileDateTime().split(" ");
+                String[] nexttime = nextDate[1].split(":");
+                String nextStr = nexttime[0] + ":" + nexttime[1];
+
+                if (!prevStr.equals(nextStr)) {
+                    sameStatusRemoveList.add(allStatusList.get(i));
+                }
+            }
+
+            ArrayList<MonitorStatus> checkPointList = new ArrayList<MonitorStatus>();
+            for (int i = sameStatusRemoveList.size() - 1 ; i >= 0 ; i--) {
+                checkPointList.add(sameStatusRemoveList.get(i));
+            }
+
+            binding.recyVwCheckPoint.setAdapter(new CustomAdapterCheckpoints(myApp.getContext(), checkPointList));
             binding.recyVwCheckPoint.setNestedScrollingEnabled(false);
 
             chartDataList.clear();
             labels.clear();
             arrBarColor.clear();
 
-            for (int i = 0; i < allStatusList.size(); i++) {
+            for (int i = 0; i < sameStatusRemoveList.size(); i++) {
 
-                MonitorStatus temp1 = allStatusList.get(i);
+                MonitorStatus temp1 = sameStatusRemoveList.get(i);
                 int cnt = 1;
-                for (int j = i + 1; j < allStatusList.size(); j++) {
+                for (int j = i + 1; j < sameStatusRemoveList.size(); j++) {
 
-                    MonitorStatus temp2 = allStatusList.get(j);
+                    MonitorStatus temp2 = sameStatusRemoveList.get(j);
 
                     if (temp1.getStatus().equals(temp2.getStatus())) {
                         cnt++;
@@ -243,7 +330,7 @@ public class MonitorInfo extends AppCompatActivity implements CallBackSuccess {
 
                 chartDataList.add(item);
 
-                if (cnt == allStatusList.size() - i) {
+                if (cnt == sameStatusRemoveList.size() - i) {
                     break;
                 }
             }
@@ -289,7 +376,7 @@ public class MonitorInfo extends AppCompatActivity implements CallBackSuccess {
                 Home.m_bPause = true;
             }
 
-            Main2Activity.isFirstLogin = false;
+            myApp.isFirstLogin = false;
 
             onBackPressed();
         }
@@ -297,8 +384,13 @@ public class MonitorInfo extends AppCompatActivity implements CallBackSuccess {
 
     @Override
     public void onBackPressed() {
-        Main2Activity.isFirstLogin = false;
+        myApp.isFirstLogin = false;
 
-        super.onBackPressed();
+        if (isNotification) {
+            Intent intent = new Intent(this, Main2Activity.class);
+            startActivity(intent);
+        } else {
+            super.onBackPressed();
+        }
     }
 }

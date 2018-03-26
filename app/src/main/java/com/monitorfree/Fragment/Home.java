@@ -29,7 +29,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.monitorfree.Activities.CallBackSuccess;
 import com.monitorfree.Activities.Main2Activity;
-import com.monitorfree.BackgroundService.BService;
 import com.monitorfree.BackgroundService.DemoService;
 import com.monitorfree.CustomAdapter.CustomAdapterMonitor;
 import com.monitorfree.MyApp;
@@ -80,12 +79,16 @@ public class Home extends Fragment implements CallBackSuccess, View.OnClickListe
 
     public static boolean m_bPause = false;
 
+    Main2Activity parent;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false);
         MyApp.component().inject(this);
+
+        parent = (Main2Activity) getActivity();
 
         binding.relAll.setOnClickListener(this);
         binding.relDown.setOnClickListener(this);
@@ -101,15 +104,17 @@ public class Home extends Fragment implements CallBackSuccess, View.OnClickListe
     @Override
     public void onResume() {
 
-        allMonitorList.clear();
-        downMonitorList.clear();
-        upMonitorList.clear();
-        pauseMonitorList.clear();
+        if (myApp.isConnectingToInternet()) {
+            allMonitorList.clear();
+            downMonitorList.clear();
+            upMonitorList.clear();
+            pauseMonitorList.clear();
 
-        myApp.globalMonitorList.clear();
-        myApp.globalBGMonitorList.clear();
+            myApp.globalMonitorList.clear();
+            myApp.globalBGMonitorList.clear();
 
-        userRequests.getMonitor(myApp, binding, getActivity(), callBackSuccess);
+            userRequests.getMonitor(myApp, binding, getActivity(), callBackSuccess);
+        }
 
         super.onResume();
     }
@@ -145,6 +150,14 @@ public class Home extends Fragment implements CallBackSuccess, View.OnClickListe
 
         monitorListSort(rootMonitorList.getData());
 
+        if (myApp.globalMonitorList.size() == 0) {
+            binding.txtNoMonitor.setVisibility(View.VISIBLE);
+
+            parent.onWizard();
+        } else {
+            binding.txtNoMonitor.setVisibility(View.GONE);
+        }
+
         for (int i = 0 ; i < myApp.globalMonitorList.size() ; i++) {
 
             ArrayList<MonitorStatus> arrStatus = myApp.globalMonitorList.get(i).getStatus();
@@ -164,26 +177,31 @@ public class Home extends Fragment implements CallBackSuccess, View.OnClickListe
                 pauseMonitorList.add(myApp.globalMonitorList.get(i));
             }
 
+            myApp.setKey(String.valueOf(myApp.globalMonitorList.get(i).getId()), arrStatus.get(0).getStatus());
 
             //start for all monitors using Jobscheduler after login
-            if (Main2Activity.isFirstLogin) {
+            if (myApp.isFirstLogin) {
 
                 AddMonitor addMonitor = myApp.globalMonitorList.get(i);
 
                 Bundle myExtrasBundle = new Bundle();
-                myExtrasBundle.putString("monitorID", addMonitor.getId());
-                myExtrasBundle.putString("address", addMonitor.getAddress());
-                myExtrasBundle.putString("keywords", addMonitor.getKeywords());
-                myExtrasBundle.putString("port", addMonitor.getPort());
-                myExtrasBundle.putString("type", addMonitor.getType());
-                myExtrasBundle.putString("active", addMonitor.getActive());
+                myExtrasBundle.putString("job_monitorID", addMonitor.getId());
+                myExtrasBundle.putString("job_monitorName", addMonitor.getName());
+                myExtrasBundle.putString("job_address", addMonitor.getAddress());
+                myExtrasBundle.putString("job_keywords", addMonitor.getKeywords());
+                myExtrasBundle.putString("job_port", addMonitor.getPort());
+                myExtrasBundle.putString("job_type", addMonitor.getType());
+                myExtrasBundle.putString("job_active", addMonitor.getActive());
+
+                myExtrasBundle.putString("job_interval", addMonitor.getInterval());
+                myExtrasBundle.putString("job_startDate", addMonitor.getStartDate());
 
                 int interval_time = Integer.valueOf(addMonitor.getInterval());
 
                 final Job.Builder builder =
-                        Main2Activity.jobDispatcher
+                        myApp.jobDispatcher
                                 .newJobBuilder()
-                                .setTag(addMonitor.getName().trim())
+                                .setTag(addMonitor.getId())
                                 .setLifetime(Lifetime.FOREVER)
                                 .setService(DemoService.class)
                                 .setTrigger(Trigger.executionWindow(60, 60 * interval_time))     //interval time 5 mins
@@ -197,7 +215,7 @@ public class Home extends Fragment implements CallBackSuccess, View.OnClickListe
 
                 builder.setExtras(myExtrasBundle);
 
-                Main2Activity.jobDispatcher.mustSchedule(builder.build());
+                myApp.jobDispatcher.mustSchedule(builder.build());
 
             }
         }
@@ -223,6 +241,7 @@ public class Home extends Fragment implements CallBackSuccess, View.OnClickListe
                 binding.relSubPause.setBackgroundResource(R.drawable.round_border);
 
                 tempMonitorLists = allMonitorList;
+
                 break;
             case 1:     //active
 
@@ -251,10 +270,25 @@ public class Home extends Fragment implements CallBackSuccess, View.OnClickListe
                 break;
         }
 
-        binding.txtVwTotal.setText(String.valueOf(allMonitorList.size()));
-        binding.txtVwActive.setText(String.valueOf(upMonitorList.size()));
-        binding.txtVwDown.setText(String.valueOf(downMonitorList.size()));
-        binding.txtVwPause.setText(String.valueOf(pauseMonitorList.size()));
+//        if (allMonitorList.size() > 0) {
+//            binding.txtVwTotal.setVisibility(View.VISIBLE);
+//            binding.txtVwTotal.setText(String.valueOf(allMonitorList.size()));
+//        }
+
+//        if (upMonitorList.size() > 0) {
+//            binding.txtVwActive.setVisibility(View.VISIBLE);
+//            binding.txtVwActive.setText(String.valueOf(upMonitorList.size()));
+//        }
+
+        if (downMonitorList.size() > 0) {
+            binding.txtVwDown.setVisibility(View.VISIBLE);
+            binding.txtVwDown.setText(String.valueOf(downMonitorList.size()));
+        }
+
+//        if (pauseMonitorList.size() > 0) {
+//            binding.txtVwDown.setVisibility(View.VISIBLE);
+//            binding.txtVwPause.setText(String.valueOf(pauseMonitorList.size()));
+//        }
 
         CustomAdapterMonitor customAdapterMonitor = new CustomAdapterMonitor(myApp.getContext(), tempMonitorLists);
         binding.recyVwMonitor.setAdapter(customAdapterMonitor);

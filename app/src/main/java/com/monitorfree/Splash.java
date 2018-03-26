@@ -1,13 +1,20 @@
 package com.monitorfree;
 
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 
 import com.monitorfree.Activities.Login;
 import com.monitorfree.Activities.Main2Activity;
 import com.monitorfree.Util.GlobalKeys;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import javax.inject.Inject;
 
@@ -23,7 +30,6 @@ public class Splash extends AppCompatActivity implements GlobalKeys {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         MyApp.component().inject(this);
-
 
         new Thread() {
             public void run() {

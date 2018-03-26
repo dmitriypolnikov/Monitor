@@ -11,6 +11,8 @@ public class MonitorStatus {
     String status;
     String addedDate;
     String mobileDateTime;
+    String deviceName;
+    String ipAddress;
 
     public String getId() {
         return id;
@@ -50,5 +52,21 @@ public class MonitorStatus {
 
     public void setMobileDateTime(String mobileDateTime) {
         this.mobileDateTime = mobileDateTime;
+    }
+
+    public String getDeviceName() {
+        return deviceName;
+    }
+
+    public void setDeviceName(String deviceName) {
+        this.deviceName = deviceName;
+    }
+
+    public String getIpAddress() {
+        return ipAddress;
+    }
+
+    public void setIpAddress(String ipAddress) {
+        this.ipAddress = ipAddress;
     }
 }

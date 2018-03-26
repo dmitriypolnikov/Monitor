@@ -36,9 +36,18 @@
                         android:layout_margin="5sp" />
 
                     <ImageView
+                        android:id="@+id/imgTypeIcon"
+                        android:layout_width="29dp"
+                        android:layout_height="29dp"
+                        android:layout_alignWithParentIfMissing="false"
+                        android:layout_centerVertical="false"
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginTop="22dp" />
+
+                    <ImageView
                         android:id="@+id/imgStatus"
-                        android:layout_width="35dp"
-                        android:layout_height="35dp"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
                         android:layout_alignRight="@+id/ivMonitor" />
 
                     <TextView
@@ -81,7 +90,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="10sp"
                                 android:text="000"
-                                android:textColor="@color/colorGrey2" />
+                                android:textColor="@color/colorWhite" />
 
                         </LinearLayout>
                     </LinearLayout>
@@ -90,8 +99,118 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1sp"
+                    android:layout_marginTop="5sp"
+                    android:layout_marginBottom="5dp"
+                    android:background="@color/colorText" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_margin="5sp"
-                    android:background="@color/colorGrey" />
+                    android:text="Description"
+                    android:textColor="#fff"
+                    android:textSize="18sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:orientation="vertical"
+                    android:paddingBottom="5dp"
+                    android:paddingTop="5dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="100dp"
+                            android:layout_height="wrap_content"
+                            android:text="Check type :"
+                            android:textColor="#F0F0F0"
+                            android:textSize="15sp" />
+
+                        <TextView
+                            android:id="@+id/txtCheckType"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#F0F0F0" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginTop="5dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="100dp"
+                            android:layout_height="wrap_content"
+                            android:text="URL :"
+                            android:textColor="#F0F0F0"
+                            android:textSize="15sp" />
+
+                        <TextView
+                            android:id="@+id/txtUrl"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#F0F0F0" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginTop="5dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="100dp"
+                            android:layout_height="wrap_content"
+                            android:text="Check every :"
+                            android:textColor="#F0F0F0"
+                            android:textSize="15sp" />
+
+                        <TextView
+                            android:id="@+id/txtCheckEvery"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#F0F0F0" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/temp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginTop="5dp"
+                        android:orientation="horizontal"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:id="@+id/temp_label"
+                            android:layout_width="100dp"
+                            android:layout_height="wrap_content"
+                            android:textColor="#F0F0F0"
+                            android:textSize="15sp" />
+
+                        <TextView
+                            android:id="@+id/txtKeywordsPort"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#F0F0F0" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1sp"
+                    android:layout_marginBottom="10sp"
+                    android:layout_marginTop="3dp"
+                    android:background="@color/colorText" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -110,7 +229,7 @@
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="2sp"
+                    android:layout_height="1sp"
                     android:layout_marginBottom="20sp"
                     android:layout_marginTop="20sp"
                     android:background="@color/colorText" />
@@ -173,7 +292,7 @@
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="2sp"
+                    android:layout_height="1sp"
                     android:layout_marginBottom="20sp"
                     android:layout_marginTop="20sp"
                     android:background="@color/colorText" />

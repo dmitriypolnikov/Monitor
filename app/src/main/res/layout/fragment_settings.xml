@@ -61,42 +61,6 @@
 
             </TableRow>
 
-            <TableRow android:layout_marginTop="10sp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="30sp"
-                    android:text="Device Name"
-                    android:textColor="@color/colorText" />
-
-                <TextView
-                    android:id="@+id/txtDeviceName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Bolo"
-                    android:textColor="#fff" />
-
-            </TableRow>
-
-            <TableRow android:layout_marginTop="10sp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="30sp"
-                    android:text="Version"
-                    android:textColor="@color/colorText" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="1.0.0"
-                    android:textColor="#fff" />
-
-            </TableRow>
-
-
         </TableLayout>
 
         <View
@@ -107,6 +71,7 @@
             android:background="@color/colorText" />
 
         <TextView
+            android:id="@+id/txtDelete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20sp"

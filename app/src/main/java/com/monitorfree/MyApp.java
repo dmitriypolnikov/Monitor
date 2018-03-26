@@ -3,6 +3,7 @@ package com.monitorfree;
 import android.app.Application;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -12,11 +13,23 @@ import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 
+import android.support.multidex.MultiDex;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
+import com.firebase.jobdispatcher.FirebaseJobDispatcher;
+import com.firebase.jobdispatcher.GooglePlayDriver;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.monitorfree.Activities.Main2Activity;
+import com.monitorfree.Activities.MonitorInfo;
 import com.monitorfree.DI.DIComponants;
 import com.monitorfree.Networking.iRepository;
 import com.monitorfree.UserModel.AddMonitor;
@@ -51,6 +64,10 @@ public class MyApp extends Application implements GlobalKeys{
         Log.d("constuctor called", "called con");
     }
 
+    public static GoogleApiClient mGoogleApiClient;
+
+    public static boolean isFirstLogin;
+    public static FirebaseJobDispatcher jobDispatcher;
 
     @Override
     public void onCreate() {
@@ -58,6 +75,7 @@ public class MyApp extends Application implements GlobalKeys{
 
         instance = this;
         context = this;
+        isFirstLogin = false;
 
         buildComponentGraph();
 
@@ -70,6 +88,12 @@ public class MyApp extends Application implements GlobalKeys{
 
         retrofitService = retrofit.create(iRepository.class);
 
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        AppEventsLogger.activateApp(this);
+
+        Log.d("App Start", "-------------------------");
+
+        jobDispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(this));
         //////////////////////////////////////
     }
 
@@ -85,6 +109,11 @@ public class MyApp extends Application implements GlobalKeys{
         return context;
     }
 
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
+    }
 
     public void logOut() {
         editor.clear();
@@ -183,6 +212,7 @@ public class MyApp extends Application implements GlobalKeys{
         }
         return false;
     }
+
 }
 
 

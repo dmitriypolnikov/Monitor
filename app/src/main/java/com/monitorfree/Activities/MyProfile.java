@@ -9,9 +9,12 @@ import com.monitorfree.MyApp;
 import com.monitorfree.R;
 import com.monitorfree.Util.GlobalKeys;
 import com.monitorfree.databinding.ActivityMyProfileBinding;
+import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
 import javax.microedition.khronos.opengles.GL;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MyProfile extends AppCompatActivity implements GlobalKeys {
 
@@ -42,5 +45,9 @@ public class MyProfile extends AppCompatActivity implements GlobalKeys {
 
         binding.include.txtVw.setText("My Profile");
 
+        String photo_url = myApp.getKey("PHOTO_URL");
+        if (!photo_url.equals("")) {
+            Picasso.get().load(photo_url).into(binding.imgVwUserProfile);
+        }
     }
 }

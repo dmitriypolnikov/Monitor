@@ -75,5 +75,31 @@ public class User extends BaseObservable {
     String hash;
     String id;
 
+    String externalUserId;
+    String externalPhotoUrl;
+    String accountType;
 
+    public String getExternalUserId() {
+        return externalUserId;
+    }
+
+    public void setExternalUserId(String externalUserId) {
+        this.externalUserId = externalUserId;
+    }
+
+    public String getExternalPhotoUrl() {
+        return externalPhotoUrl;
+    }
+
+    public void setExternalPhotoUrl(String externalPhotoUrl) {
+        this.externalPhotoUrl = externalPhotoUrl;
+    }
+
+    public String getAccountType() {
+        return accountType;
+    }
+
+    public void setAccountType(String accountType) {
+        this.accountType = accountType;
+    }
 }

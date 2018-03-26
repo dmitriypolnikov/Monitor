@@ -15,7 +15,8 @@ public interface GlobalKeys {
     public static String IS_VERIFIED = "is_verified";
     public static String USER_HASH = "USER_HASH";
     public static String USER_ID = "USER_ID";
-
+    public static String ACCOUNT_TYPE = "ACCOUNT_TYPE";
+    public static String PHOTO_URL = "PHOTO_URL";
 
 
 }

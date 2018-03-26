@@ -11,6 +11,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
 
     <!--<uses-permission android:name="android.permission.WAKE_LOCK" />-->
 
@@ -22,6 +23,16 @@
         android:roundIcon="@drawable/logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
+
+        <activity
+            android:name="com.facebook.FacebookActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:label="@string/app_name" />
+
         <activity
             android:name=".Splash"
             android:screenOrientation="portrait">
@@ -51,7 +62,13 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".Activities.MonitorInfo"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="com.monitorfree.Activities.MonitorInfo" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
         <activity
             android:name=".Activities.SaveMonitor"
             android:screenOrientation="portrait"
@@ -67,7 +84,14 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden"></activity>
 
-        <!--<service android:name=".BackgroundService.BService"/>-->
+        <activity android:name=".Activities.Result"
+            android:label="Result Activity"
+            android:parentActivityName=".Activities.Login">
+        </activity>
+
+        <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value=".Activities.Login"/>
 
         <service
             android:exported="false"

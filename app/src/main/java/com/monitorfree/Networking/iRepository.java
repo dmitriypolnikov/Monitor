@@ -5,6 +5,7 @@ import com.monitorfree.RequestModel.RootLogin;
 import com.monitorfree.RequestModel.RootMonitorList;
 import com.monitorfree.RequestModel.RootMonitorStatus;
 import com.monitorfree.RequestModel.RootRegister;
+import com.monitorfree.RequestModel.Status;
 import com.monitorfree.UserModel.User;
 
 import okhttp3.ResponseBody;
@@ -28,13 +29,17 @@ public interface iRepository {
 
     @FormUrlEncoded
     @POST("/user/register/")
-    Call<RootRegister> signUp(@Field("fullName") String fullName, @Field("password") String password, @Field("email") String email,
-                              @Field("key") String key, @Field("sig") String sig);
+    Call<RootLogin> signUp(@Field("fullName") String fullName, @Field("password") String password, @Field("email") String email,
+                              @Field("key") String key, @Field("sig") String sig, @Field("accountType") String accountType, @Field("externalUserId") String externalUserId, @Field("externalPhotoUrl") String externalPhotoUrl);
 
     @FormUrlEncoded
     @POST("/user/auth/")
     Call<RootLogin> login(@Field("password") String password, @Field("email") String email,
                           @Field("key") String key, @Field("sig") String sig);
+
+    @FormUrlEncoded
+    @POST("/user/delete/")
+    Call<Status> accountDelete(@Field("key") String key, @Field("sig") String sig, @Field("hash") String hash);
 
     @FormUrlEncoded
     @POST("/monitor/add/")
@@ -53,7 +58,7 @@ public interface iRepository {
 
     @FormUrlEncoded
     @POST("/status/add/")
-    Call<RootRegister> sendStatus(@Field("sig") String sig, @Field("key") String key, @Field("hash") String hash, @Field("monitorId") String monitorId, @Field("status") String status, @Field("mobileDateTime") String mobileDateTime);
+    Call<RootRegister> sendStatus(@Field("sig") String sig, @Field("key") String key, @Field("hash") String hash, @Field("monitorId") String monitorId, @Field("status") String status, @Field("mobileDateTime") String mobileDateTime, @Field("deviceName") String deviceName, @Field("ipAddress") String ipAddress);
 
 
     @FormUrlEncoded

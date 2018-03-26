@@ -18,6 +18,10 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="RadioButtonStyle" parent="@android:style/Widget.CompoundButton">
+        <item name="colorAccent">@color/colorGreen</item>
+    </style>
+
     <style name="menuItems">
     <item name="android:drawablePadding">10sp</item>
     <item name="android:textColor">#000</item>

@@ -1,5 +1,7 @@
 package com.monitorfree.DI;
 
+import android.provider.Settings;
+
 import com.monitorfree.Activities.ForgotPassword;
 import com.monitorfree.Activities.Login;
 import com.monitorfree.Activities.Main2Activity;
@@ -8,7 +10,6 @@ import com.monitorfree.Activities.MyProfile;
 import com.monitorfree.Activities.SaveMonitor;
 import com.monitorfree.Activities.SignUp;
 import com.monitorfree.Activities.Verification;
-import com.monitorfree.BackgroundService.BService;
 import com.monitorfree.BackgroundService.DemoService;
 import com.monitorfree.Fragment.AddMonitor;
 import com.monitorfree.Fragment.FAQs;
@@ -45,8 +46,6 @@ public interface DIComponants {
 
     void inject(Home home);
 
-    void inject(BService home);
-
 //    void inject(SaveMonitor login);
 
     void inject(ForgotPassword login);
@@ -57,7 +56,7 @@ public interface DIComponants {
 
     void inject(Main2Activity main2Activity);
 
-    void inject(SignUp login);
+//    void inject(SignUp login);
 
     void inject(MyProfile myProfile);
 
@@ -66,4 +65,7 @@ public interface DIComponants {
     void inject(AddMonitor myProfile);
 
     void inject(MonitorInfo myProfile);
+
+    void inject(Settings login);
+
 }
