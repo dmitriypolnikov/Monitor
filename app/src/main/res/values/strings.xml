@@ -1,9 +1,9 @@
 <resources>
-    <string name="app_name">MonitorFree</string>
+    <string name="app_name">Monitor Free</string>
     <string name="title_activity_main2">Main2Activity</string>
 
-    <string name="facebook_app_id">147362655957106</string>
-    <string name="fb_login_protocol_scheme">fb147362655957106</string>
+    <string name="facebook_app_id">169262707118824</string>
+    <string name="fb_login_protocol_scheme">fb169262707118824</string>
 
     <string name="title_home">Home</string>
     <string name="title_dashboard">Monitor</string>

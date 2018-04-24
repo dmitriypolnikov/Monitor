@@ -4,7 +4,7 @@ android {
     compileSdkVersion 26
     buildToolsVersion '26.0.3'
     defaultConfig {
-        applicationId 'com.monitorfree'
+        applicationId 'com.freewebsitemonitor'
         minSdkVersion 16
         targetSdkVersion 26
         versionCode 1
@@ -77,4 +77,5 @@ dependencies {
 //    annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
 
     compile 'com.squareup.picasso:picasso:2.71828'
+    compile 'com.facebook.network.connectionclass:connectionclass:1.0.1'
 }
