@@ -1,35 +1,27 @@
 {
   "project_info": {
-    "project_number": "695064365783",
-    "firebase_url": "https://monitorfree-200110.firebaseio.com",
-    "project_id": "monitorfree-200110",
-    "storage_bucket": "monitorfree-200110.appspot.com"
+    "project_number": "644349886088",
+    "firebase_url": "https://websitemonitor-202209.firebaseio.com",
+    "project_id": "websitemonitor-202209",
+    "storage_bucket": "websitemonitor-202209.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:695064365783:android:8a8d172f03e4e611",
+        "mobilesdk_app_id": "1:644349886088:android:8a8d172f03e4e611",
         "android_client_info": {
           "package_name": "com.freewebsitemonitor"
         }
       },
       "oauth_client": [
         {
-          "client_id": "695064365783-8dd4ronldocf8kla774d0ajrp2g80g4p.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.freewebsitemonitor",
-            "certificate_hash": "2eea8a9331ad5847ab8c0beb8751cde090af3989"
-          }
-        },
-        {
-          "client_id": "695064365783-qqtm7j1drct82i6oee8pden1dqk6muhd.apps.googleusercontent.com",
+          "client_id": "644349886088-l7r4h4e3ne767ijehe43ke5khqt412s3.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBL42Y2soADyu_czntjZH_b0EODftJwaHE"
+          "current_key": "AIzaSyDWoBKbhLqZPRwv5_aX2OMd7isvkrOCiW0"
         }
       ],
       "services": {
@@ -40,7 +32,7 @@
           "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "695064365783-qqtm7j1drct82i6oee8pden1dqk6muhd.apps.googleusercontent.com",
+              "client_id": "644349886088-l7r4h4e3ne767ijehe43ke5khqt412s3.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
