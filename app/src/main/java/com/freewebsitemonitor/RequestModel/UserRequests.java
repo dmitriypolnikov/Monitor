@@ -73,15 +73,12 @@ public class UserRequests implements GlobalKeys {
                     Toast.makeText(boloTalk.getContext(), userLogin2.getStatus().getMsg(), Toast.LENGTH_SHORT).show();
 
                 }
-
             }
 
             @Override
             public void onFailure(Call<RootLogin> call, Throwable t) {
 
                 boloTalk.closeProgress();
-
-                Toast.makeText(boloTalk.getContext(), "Email already exist", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -114,13 +111,19 @@ public class UserRequests implements GlobalKeys {
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     classContext.startActivity(intent);
 
-                } else if (errorType == 101) {
-                    Toast.makeText(boloTalk.getContext(), userLogin2.getStatus().getMsg(), Toast.LENGTH_SHORT).show();
                 } else {
+                    AlertDialog.Builder newDialog = new AlertDialog.Builder(classContext);
+                    newDialog.setTitle("Error ?");
+                    newDialog.setMessage(userLogin2.getStatus().getMsg());
+                    newDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+                    newDialog.show();
+
                     Toast.makeText(boloTalk.getContext(), userLogin2.getStatus().getMsg(), Toast.LENGTH_SHORT).show();
-
                 }
-
             }
 
             @Override
@@ -246,9 +249,9 @@ public class UserRequests implements GlobalKeys {
 
                 } else if (errorType == 102) {
                     AlertDialog.Builder newDialog = new AlertDialog.Builder(classContext);
-                    newDialog.setTitle("Error ?");
+                    newDialog.setTitle("Login Error");
                     newDialog.setMessage(userLogin2.getStatus().getMsg());
-                    newDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    newDialog.setPositiveButton("Close", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.cancel();
                         }
@@ -263,21 +266,21 @@ public class UserRequests implements GlobalKeys {
             @Override
             public void onFailure(Call<RootLogin> call, Throwable t) {
                 boloTalk.closeProgress();
-                AlertDialog.Builder newDialog = new AlertDialog.Builder(classContext);
-                newDialog.setTitle("Error ?");
-                newDialog.setMessage("User don't exist");
-                newDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
-                newDialog.show();
+//                AlertDialog.Builder newDialog = new AlertDialog.Builder(classContext);
+//                newDialog.setTitle("Error ?");
+//                newDialog.setMessage("User don't exist");
+//                newDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        dialog.cancel();
+//                    }
+//                });
+//                newDialog.show();
             }
         });
     }
 
 
-    public void funForgotPass(MyApp boloTalk, User user, ActivityForgotPasswordBinding binding, Context classContext) {
+    public void funForgotPass(MyApp boloTalk, User user, ActivityForgotPasswordBinding binding, Context classContext, CallBackSuccess callBackSuccess) {
 
         if (user.getEmail() == null || user.getEmail().equals("")) {
             binding.etEmail.setError("Please Enter Email");
@@ -305,6 +308,7 @@ public class UserRequests implements GlobalKeys {
                     if (errorType == 0) {
                         Toast.makeText(boloTalk.getContext(), userLogin2.getStatus().getMsg(), Toast.LENGTH_SHORT).show();
 
+                        callBackSuccess.success(userLogin2);
                     } else if (errorType == 106) {
                         Toast.makeText(boloTalk.getContext(), userLogin2.getStatus().getMsg(), Toast.LENGTH_SHORT).show();
                     }
@@ -314,14 +318,14 @@ public class UserRequests implements GlobalKeys {
                 @Override
                 public void onFailure(Call<RootRegister> call, Throwable t) {
                     boloTalk.closeProgress();
-                    Snackbar mSnackbar = Snackbar.make(binding.etEmail, "Unable to connect", Snackbar.LENGTH_LONG)
-                            .setAction("RETRY", new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    funForgotPass(boloTalk, user, binding, classContext);
-                                }
-                            });
-                    mSnackbar.setActionTextColor(Color.RED).show();
+//                    Snackbar mSnackbar = Snackbar.make(binding.etEmail, "Unable to connect", Snackbar.LENGTH_LONG)
+//                            .setAction("RETRY", new View.OnClickListener() {
+//                                @Override
+//                                public void onClick(View view) {
+//                                    funForgotPass(boloTalk, user, binding, classContext);
+//                                }
+//                            });
+//                    mSnackbar.setActionTextColor(Color.RED).show();
                 }
             });
 

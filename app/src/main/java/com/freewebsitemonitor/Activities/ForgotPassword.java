@@ -17,7 +17,7 @@ import java.lang.reflect.Field;
 
 import javax.inject.Inject;
 
-public class ForgotPassword extends AppCompatActivity {
+public class ForgotPassword extends AppCompatActivity implements CallBackSuccess {
 
     ActivityForgotPasswordBinding binding;
 
@@ -30,11 +30,15 @@ public class ForgotPassword extends AppCompatActivity {
     @Inject
     User user;
 
+    CallBackSuccess callBackSuccess;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_forgot_password);
         MyApp.component().inject(this);
+
+        callBackSuccess = this;
 
         binding.setUser(user);
 
@@ -57,12 +61,17 @@ public class ForgotPassword extends AppCompatActivity {
         switch (view.getId()) {
 
             case R.id.btnSend:
-                userRequests.funForgotPass(myApp,user,binding,ForgotPassword.this);
+                userRequests.funForgotPass(myApp,user,binding,ForgotPassword.this, callBackSuccess);
                 break;
 
             case R.id.txtSignup:
                 myApp.go(ForgotPassword.this, SignUp.class);
                 break;
         }
+    }
+
+    @Override
+    public void success(Object object) {
+        finish();
     }
 }

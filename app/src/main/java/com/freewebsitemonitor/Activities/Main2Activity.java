@@ -102,34 +102,34 @@ public class Main2Activity extends AppCompatActivity {
 
     public void onWizard(){
 
-        final Dialog dialog = new Dialog(this);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-        dialog.setContentView(R.layout.overlay);
-
-        ImageView addMonitor = dialog.findViewById(R.id.addMonitor);
-        addMonitor.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                dialog.dismiss();
+//        final Dialog dialog = new Dialog(this);
+//        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+//        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+//        dialog.setContentView(R.layout.overlay);
+//
+//        ImageView addMonitor = dialog.findViewById(R.id.addMonitor);
+//        addMonitor.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//                dialog.dismiss();
 
                 setTitle("Add Monitor");
                 fragmentClass = AddMonitor.class;
                 replaceFragment();
-            }
-        });
-
-//        for dismissing anywhere you touch
-        LinearLayout masterView = dialog.findViewById(R.id.parentLayout);
-        masterView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                dialog.dismiss();
-            }
-        });
-        dialog.show();
+//            }
+//        });
+//
+////        for dismissing anywhere you touch
+//        LinearLayout masterView = dialog.findViewById(R.id.parentLayout);
+//        masterView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//                dialog.dismiss();
+//            }
+//        });
+//        dialog.show();
     }
 
     public void replaceFragment() {
@@ -191,7 +191,7 @@ public class Main2Activity extends AppCompatActivity {
                 myApp.isFirstLogin = false;
 
                 setTitle("Monitor");
-                fragmentClass = Monitor.class;
+                fragmentClass = AddMonitor.class;
                 replaceFragment();
                 break;
 
@@ -220,14 +220,17 @@ public class Main2Activity extends AppCompatActivity {
 
                 String accountType = myApp.getKey(ACCOUNT_TYPE);
 
-                if (accountType.equals("1")) {
+                Intent intent = new Intent(myApp.getContext(), Login.class);
+
+                if (accountType.equals("1")) {      //facebook
                     //FB logout
                     LoginManager.getInstance().logOut();
+                } else if (accountType.equals("2")) {   //google
+                    intent.putExtra("google_logout", true);
                 }
 
                 myApp.logOut();
 
-                Intent intent = new Intent(myApp.getContext(), Login.class);
                 startActivity(intent);
                 finish();
                 // update profileInfo from here..

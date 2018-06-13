@@ -79,7 +79,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:gravity="center_vertical"
-                android:text="Monitor"
+                android:text="Add Monitor"
                 android:textColor="@color/colorWhite" />
 
         </LinearLayout>

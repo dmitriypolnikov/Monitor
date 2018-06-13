@@ -94,10 +94,8 @@
                         android:layout_height="35sp"
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="13dp"
-                        android:background="@drawable/round_shape"
                         android:backgroundTint="@color/colorWhite"
-                        android:padding="9dp"
-                        app:srcCompat="@drawable/svgic_arrow_downwtime_small" />
+                        app:srcCompat="@drawable/ic_down" />
 
                     <TextView
                         android:id="@+id/txtDown"
@@ -147,10 +145,8 @@
                         android:layout_height="35sp"
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="13dp"
-                        android:background="@drawable/round_shape"
                         android:backgroundTint="@color/colorWhite"
-                        android:padding="10dp"
-                        app:srcCompat="@drawable/svgic_arrow_up" />
+                        app:srcCompat="@drawable/ic_arrow_up" />
 
                     <TextView
                         android:id="@+id/txtUp"

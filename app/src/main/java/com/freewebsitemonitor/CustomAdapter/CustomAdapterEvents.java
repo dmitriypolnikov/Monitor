@@ -46,7 +46,7 @@ public class CustomAdapterEvents extends RecyclerView.Adapter<CustomAdapterEvent
         ChartModel chartData = chartList.get(position);
 
         if (chartData.getStatus().equals("1")) {
-            holder.binding.ivMonitorStatus.setBackgroundResource(R.drawable.ic_up_arrow);
+            holder.binding.ivMonitorStatus.setBackgroundResource(R.drawable.ic_arrow_up);
         } else {
             holder.binding.ivMonitorStatus.setBackgroundResource(R.drawable.ic_down);
         }

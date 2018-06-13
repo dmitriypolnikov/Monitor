@@ -49,7 +49,7 @@ public class CustomAdapterCheckpoints extends RecyclerView.Adapter<CustomAdapter
         holder.binding.txtMonitorTime.setText(arrTime[0] + ":" + arrTime[1]);
 
         if (statusData.getStatus().equals("1")) {
-            holder.binding.imgMonitorStatus.setBackgroundResource(R.drawable.ic_up_arrow);
+            holder.binding.imgMonitorStatus.setBackgroundResource(R.drawable.ic_arrow_up);
         } else {
             holder.binding.imgMonitorStatus.setBackgroundResource(R.drawable.ic_down);
         }

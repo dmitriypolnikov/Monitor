@@ -118,14 +118,14 @@ public class MonitorInfo extends AppCompatActivity implements CallBackSuccess {
             binding.temp.setVisibility(View.VISIBLE);
 
             binding.imgTypeIcon.setBackgroundResource(R.drawable.keyword);
-            binding.tempLabel.setText("Keywords");
+            binding.tempLabel.setText("Keywords :");
             binding.txtKeywordsPort.setText(keywords);
         } else if (type.equals("4")) {
             monitorType = "port";
             binding.temp.setVisibility(View.VISIBLE);
 
             binding.imgTypeIcon.setBackgroundResource(R.drawable.port);
-            binding.tempLabel.setText("Port");
+            binding.tempLabel.setText("Port :");
             binding.txtKeywordsPort.setText(port);
         }
 
@@ -169,7 +169,7 @@ public class MonitorInfo extends AppCompatActivity implements CallBackSuccess {
         if (monitorActive.equals("1")) {        //active
             if (monitorStatus.equals("1")) {    //up
                 binding.ivMonitor.setBackgroundResource(R.drawable.svgic_monitor_btn_hover_up);
-                binding.imgStatus.setBackgroundResource(R.drawable.ic_up_arrow);
+                binding.imgStatus.setBackgroundResource(R.drawable.ic_arrow_up);
             } else {        //down
                 binding.ivMonitor.setBackgroundResource(R.drawable.svgic_monitor_btn_hover_down);
                 binding.imgStatus.setBackgroundResource(R.drawable.ic_down);

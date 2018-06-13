@@ -70,28 +70,24 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
         binding = DataBindingUtil.setContentView(this, R.layout.activity_login);
         MyApp.component().inject(this);
 
+        Intent intent = getIntent();
+        boolean isGLogout = intent.getBooleanExtra("google_logout", false);
+
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .requestProfile()
                 .build();
 
-        myApp.mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this, this)
-                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                .build();
+        if (myApp.mGoogleApiClient == null) {
+            myApp.mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .enableAutoManage(this, this)
+                    .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                    .build();
+        }
 
         binding.btnGMail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                Auth.GoogleSignInApi.signOut(myApp.mGoogleApiClient).setResultCallback(
-                        new ResultCallback<Status>() {
-                            @Override
-                            public void onResult(Status status) {
-
-                                Log.d("google", "logout");
-                            }
-                        });
 
                 Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(myApp.mGoogleApiClient);
                 startActivityForResult(signInIntent, RC_SIGN_IN);
@@ -147,6 +143,15 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
             e.printStackTrace();
         }
 
+        if (isGLogout && myApp.mGoogleApiClient.isConnected()) {
+            Auth.GoogleSignInApi.signOut(myApp.mGoogleApiClient).setResultCallback(
+                    new ResultCallback<Status>() {
+                        @Override
+                        public void onResult(Status status) {
+                            Log.d("google", "logout");
+                        }
+                    });
+        }
     }
 
     public void clickLogin(View view) {

@@ -6,6 +6,7 @@ import android.databinding.DataBindingUtil;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.util.Patterns;
 import android.view.View;
@@ -161,6 +162,11 @@ public class SaveMonitor extends AppCompatActivity implements CallBackSuccess {
                 addMonitor.setName(binding.edtFriendlyName.getText().toString());
 
                 if(type.equals("2")) {
+                    if (binding.edtPing.getText().toString().equals("")) {
+                        binding.edtMeta.setError("Enter IP");
+                        break;
+                    }
+
                     addMonitor.setAddress(binding.edtPing.getText().toString());
                 } else {
                     addMonitor.setAddress(strProtocol + binding.edtWebAddress.getText().toString());
@@ -181,17 +187,27 @@ public class SaveMonitor extends AppCompatActivity implements CallBackSuccess {
                 }
 
                 if (addMonitor.getName() == null || addMonitor.getName().equals("")) {
-                    binding.edtFriendlyName.setError("Please Enter Name");
+                    binding.edtFriendlyName.setError("Enter Friendly Name");
                 } else if (addMonitor.getAddress() == null || addMonitor.getAddress().equals("")) {
-                    binding.edtWebAddress.setError("Please Enter Address");
+                    binding.edtWebAddress.setError("Enter URL");
                 } else if (checkWebAddress(addMonitor.getAddress()) == false) {
-                    binding.edtWebAddress.setError("Web Address Invalid");
+                    binding.edtWebAddress.setError("URL Invalid");
                 } else {
 
                     if (type.equals("3")) {
-                        addMonitor.setKeywords(binding.edtMeta.getText().toString());
+                        if (binding.edtMeta.getText().toString().equals("")) {
+                            binding.edtMeta.setError("Enter Keywords");
+                            break;
+                        } else {
+                            addMonitor.setKeywords(binding.edtMeta.getText().toString());
+                        }
                     } else if (type.equals("4")) {
-                        addMonitor.setPort(binding.edtPort.getText().toString());
+                        if (binding.edtPort.getText().toString().equals("") || binding.edtPort.getText().toString().equals("0")) {
+                            binding.edtPort.setError("Enter Port");
+                            break;
+                        } else {
+                            addMonitor.setPort(binding.edtPort.getText().toString());
+                        }
                     }
 
                     userRequests.funAddMonitor(MyApp.instance, addMonitor, binding, SaveMonitor.this, callBackSuccess);

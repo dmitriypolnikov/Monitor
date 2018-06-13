@@ -128,7 +128,7 @@
                         <TextView
                             android:layout_width="100dp"
                             android:layout_height="wrap_content"
-                            android:text="Check type :"
+                            android:text="Monitor Type :"
                             android:textColor="#F0F0F0"
                             android:textSize="15sp" />
 
@@ -170,7 +170,7 @@
                         <TextView
                             android:layout_width="100dp"
                             android:layout_height="wrap_content"
-                            android:text="Check every :"
+                            android:text="Frequency :"
                             android:textColor="#F0F0F0"
                             android:textSize="15sp" />
 

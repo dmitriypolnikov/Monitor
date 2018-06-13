@@ -47,7 +47,7 @@
 
                     <LinearLayout
                         android:id="@+id/linLastTime"
-                        android:layout_width="100dp"
+                        android:layout_width="130dp"
                         android:layout_height="wrap_content"
                         android:background="@drawable/square_shape"
                         android:orientation="horizontal"
@@ -85,7 +85,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="10dp"
-                            android:hint="www.test.com"
+                            android:digits="0123456789.qwertyuiopasdfghjklzxcvbnm@"
+                            android:hint="Enter URL"
                             android:textColor="@color/colorWhite" />
                     </android.support.design.widget.TextInputLayout>
 
@@ -113,7 +114,7 @@
                         android:id="@+id/edtFriendlyName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Enter Friendly name"
+                        android:hint="Enter Friendly Name"
                         android:textColor="@color/colorWhite" />
                 </android.support.design.widget.TextInputLayout>
 
@@ -132,7 +133,7 @@
                         android:id="@+id/edtMeta"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Enter Search Keyword"
+                        android:hint="Enter Keywords"
                         android:textColor="@color/colorWhite" />
 
                 </android.support.design.widget.TextInputLayout>
@@ -152,7 +153,8 @@
                         android:id="@+id/edtPing"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="e.g 8.8.8.8"
+                        android:hint="Enter IP Address"
+                        android:inputType="number"
                         android:textColor="@color/colorWhite" />
 
                 </android.support.design.widget.TextInputLayout>

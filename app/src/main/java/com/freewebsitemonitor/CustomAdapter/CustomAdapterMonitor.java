@@ -73,7 +73,7 @@ public class CustomAdapterMonitor extends RecyclerView.Adapter<CustomAdapterMoni
 
         if (addMonitorList.get(position).getActive().equals("1")) {
             if (addMonitorList.get(position).getStatus().get(0).getStatus().equals("1")) {
-                holder.binding.imgStatus.setBackgroundResource(R.drawable.ic_up_arrow);
+                holder.binding.imgStatus.setBackgroundResource(R.drawable.ic_arrow_up);
                 holder.binding.txtGoSite.setVisibility(View.GONE);
             } else {
                 holder.binding.imgStatus.setBackgroundResource(R.drawable.ic_down);
