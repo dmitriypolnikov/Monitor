@@ -85,7 +85,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="10dp"
-                            android:digits="0123456789.qwertyuiopasdfghjklzxcvbnm@"
+                            android:digits="0123456789.qwertyuiopasdfghjklzxcvbnm@-"
                             android:hint="Enter URL"
                             android:textColor="@color/colorWhite" />
                     </android.support.design.widget.TextInputLayout>

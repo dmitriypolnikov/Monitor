@@ -157,6 +157,8 @@ public class MonitorInfo extends AppCompatActivity implements CallBackSuccess {
                 } else {
                     isDelete = true;
                     userRequests.sendMonitorPause(myApp, monitorId, -1, monitorName, address, keywords, port, type, interval, startDate, MonitorInfo.this, callBackSuccess);
+
+                    binding.include.ivPaused.setBackgroundResource(R.drawable.pause);
                 }
             }
         });
@@ -174,9 +176,14 @@ public class MonitorInfo extends AppCompatActivity implements CallBackSuccess {
                 binding.ivMonitor.setBackgroundResource(R.drawable.svgic_monitor_btn_hover_down);
                 binding.imgStatus.setBackgroundResource(R.drawable.ic_down);
             }
+
+            binding.include.ivPaused.setBackgroundResource(R.drawable.pause);
+
         } else {        //pause
             binding.ivMonitor.setBackgroundResource(R.drawable.svgic_monitor_btn_hover_pause);
             binding.imgStatus.setBackgroundResource(R.drawable.ic_pause1);
+
+            binding.include.ivPaused.setBackgroundResource(R.drawable.play);
         }
 
         ArrayAdapter aa = new ArrayAdapter(this, android.R.layout.simple_spinner_item, timeHourSlot);
@@ -243,6 +250,8 @@ public class MonitorInfo extends AppCompatActivity implements CallBackSuccess {
                 } else if (type.equals("pause")) {
                     isDelete = false;
                     userRequests.sendMonitorPause(myApp, monitorId, 1, "", "", "", "", "", "", "", MonitorInfo.this, callBackSuccess);
+
+                    binding.include.ivPaused.setBackgroundResource(R.drawable.play);
                 }
 
                 //JobSchdeuler Cancel

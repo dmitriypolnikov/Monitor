@@ -60,8 +60,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginRight="10dp"
                 android:layout_toLeftOf="@+id/ivDelete"
-                android:padding="7dp"
-                app:srcCompat="@drawable/pause" />
+                android:padding="7dp" />
 
             <ImageView
                 android:id="@+id/ivDelete"

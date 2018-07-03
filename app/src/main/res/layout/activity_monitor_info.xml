@@ -216,7 +216,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="5sp"
-                    android:text="CheckPoints"
+                    android:text="Checkpoints"
                     android:textColor="#fff"
                     android:textSize="18sp" />
 
@@ -239,7 +239,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="5sp"
-                    android:text="Monitor Health"
+                    android:text="Monitor Status"
                     android:textColor="#fff"
                     android:textSize="18sp" />
 
